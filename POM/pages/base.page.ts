@@ -7,29 +7,36 @@ export class BasePage {
     readonly txtUserName: Locator;
     readonly txtPassword: Locator;
     readonly btnLogIn: Locator;
+    readonly holakace: Locator;
+    readonly btnSubMenu: Locator;
+    readonly btnVentas: Locator;
+    readonly lbAdquiriente: Locator;
 
-   
 
     constructor(page: Page){
         this.page = page;
-        this.btnIniciarSesion = this.page.locator('#idToken1')
-        this.txtUserName = this.page.getByPlaceholder('#idToken2');
-        this.txtPassword =  this.page.locator('#loginButton_0');
-        this.btnLogIn = this.page.getByRole('button', {name: 'loginButton_0'}  )
-        /*
-        this.btnInicioSesion = this.page.getByText('Ir a inicio de sesión');
-        this.txtUserName = this.page.getByPlaceholder('User Name');
-        this.txtPassword = this.page.getByPlaceholder('Password');
-        this.btnLogIn = this.page.getByRole('button', { name: 'Log in' });
-        */
+        this.btnIniciarSesion = page.getByRole('button', { name: 'Ir a inicio de sesión' });
+        this.txtUserName = page.getByPlaceholder('User Name');
+        this.txtPassword = page.getByPlaceholder('Password');
+        this.btnLogIn = page.getByRole('button', { name: 'Log in' });
+        this.btnSubMenu = page.getByText('more_horiz');
+        this.btnVentas =  page.locator('.q-icon.ebind-icons.icon-icon_ventas').first();                   
+        this.lbAdquiriente = page.getByText('BBVA Perú');
+        
+
     }
 
     async iniciarSesion(){
         await this.page.goto(URL.EBINDLATAM);
-        await this.btnIniciarSesion.click;
+        await this.btnIniciarSesion.click();
         await this.txtUserName.fill(CREDENTIALS.USERNAME);
         await this.txtPassword.fill(CREDENTIALS.PASSWORD);
         await this.btnLogIn.click();
+    }
+
+    async menuConsultaVentas(){
+        await this.btnSubMenu.click();
+        await this.btnVentas.click();
     }
 
 

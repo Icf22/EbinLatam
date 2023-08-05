@@ -9,5 +9,9 @@
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.36.2"
+  },
+  "dependencies": {
+    "@types/xlsx": "^0.0.36",
+    "xlsx": "^0.18.5"
   }
 }
