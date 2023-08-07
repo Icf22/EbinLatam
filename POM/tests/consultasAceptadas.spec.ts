@@ -8,6 +8,7 @@ test('consultaVentasAceptadas', async({page}) =>{
    await basePage.iniciarSesion();
    await basePage.menuConsultaVentas();
    await ventasPage.consultarVentasAceptadas();
+   await basePage.cerrarSesion();
 
 }
 
