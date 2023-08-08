@@ -38,6 +38,10 @@ export class BasePage {
         await this.btnSubMenu.click();
         await this.btnVentas.click();
     }
-
+  
+    async cerrarSesion(){
+        await this.page.getByRole('banner').getByRole('button', { name: 'Expandir' }).click();
+        await this.page.getByText('Cerrar sesión').click();
+    }
 
 }
