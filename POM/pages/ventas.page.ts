@@ -24,7 +24,7 @@ constructor(page: Page){
     this.lbOpcionesFechaProceso = page.getByRole('listbox').getByText('Fecha Proceso');  
     this.dateFechaInicial = page.getByLabel('Fecha inicial*');  
     this.dateFechaFinal = page.getByLabel('Fecha final*');  
-    this.txtAfiliacion = page.getByLabel('Afiliación');
+    this.txtAfiliacion = page.getByLabel('Afiliación').first();
     this.txtNumeroCuenta = page.getByPlaceholder('Número de cuenta');
     this.txtAutorizacion = page.getByPlaceholder('Número de autorización');
     this.btnConsultar = page.getByRole('button', { name: 'Consultar' });
@@ -37,6 +37,7 @@ async consultarVentasAceptadas(){
     const workbook = XLSX.readFile(filePath);
     const worksheet = workbook.Sheets[workbook.SheetNames[0]]; 
     const lastRow = XLSX.utils.sheet_to_json(worksheet).length + 1;
+    //const lastRow = 2;
     
 
         for (let i = 2; i <= lastRow; i++) {
@@ -75,8 +76,9 @@ async consultarVentasAceptadas(){
           let fechaDatePicker = worksheet['AF'+i]?.w || '';
 
       
-       this.datosExcel = [fecha, banco, codigoTransaccion, plataforma, codigoIntercambio, fechaTransaccion, horaTransaccion, numAfiliacion, numReferenciaRrn, numCuenta, numCuenta2,referenciaIntercambio,
-       numAutorizacion, importeTransaccion, importeCashback, moneda, registroLog, emisor, codigoError, codigoRiesgo, codigoTipoProducto, numContrato, cuentaRecaudadora, codigoMedioAcceso,
+       this.datosExcel = [fecha, banco, codigoTransaccion, plataforma, codigoIntercambio, fechaTransaccion, horaTransaccion, numAfiliacion, 
+        numReferenciaRrn, numCuenta, numCuenta2,referenciaIntercambio,numAutorizacion, importeTransaccion, importeCashback,
+         moneda, registroLog, emisor, codigoError, codigoRiesgo, codigoTipoProducto, numContrato, cuentaRecaudadora,codigoMedioAcceso,
         codigoIndicadorComercioElectronico, diferimientoPromocion, parcializadoPromocion, banderaTarjetaPresente, descripcionTipoMoneda ];
 
        await this.lbAdquiriente.click();
@@ -90,50 +92,46 @@ async consultarVentasAceptadas(){
        await this.txtAutorizacion.fill(numAutorizacion);
        await this.btnConsultar.click();
        await this.page.getByText(lote).click();
-       await this.compararDetalleVenta(i, this.datosExcel);
+       await this.compararDetalleVenta(i);
        }
  }
 
-     async compararDetalleVenta(i, datoExcel){
+     async compararDetalleVenta(i){
+      
       await this.page.waitForSelector('.col-12.row.q-mt-lg');
 
       const datosDelFrontend = await this.page.evaluate(() => {
         const tabla = document.querySelector('.col-12.row.q-mt-lg');
     
         if (!tabla) {
-          console.log('tabla no existe en la iteración número '+ i);
+          console.log('tabla no existe');
           return [];
         }
-    
-        const columnas = tabla.querySelectorAll('.col-6.text-left.text-grey-6.e-wrap-word');
+     const columnas = tabla.querySelectorAll('.col-6.text-left.text-grey-6.e-wrap-word');
         const datos: string[] = [];
-    
+        
         columnas.forEach(elemento => {
           const dato = elemento.textContent?.trim() ?? '';
           datos.push(dato);
         });
-    
         return datos;
       });
-    
-      console.log(datosDelFrontend);
-    
+      //console.log('Datos del FrontEnd   ' +  datosDelFrontend);
+      //console.log('Datos del Excell ' + this.datosExcel);
       const minLength = Math.min(this.datosExcel.length, datosDelFrontend.length);
-    
       for (let i = 0; i < minLength; i++) {
         const datoExcel = this.datosExcel[i];
         const datoFrontend = datosDelFrontend[i];
-    
-        if (!datoExcel || !datoFrontend) {     // Salta la comparación si una de las matrices tiene datos vacíos
+       if (!datoExcel || !datoFrontend) {  
           continue;
         }
-    
-        if (datoExcel !== datoFrontend) {
-          console.log(`Error en el registro ${i + 1}`);
+         if (datoExcel !== datoFrontend) {
+          console.log(`Error en el registro ${i + 1} ` + '  Dato Excell ' + datoExcel + '  y de Front ' + datoFrontend );
+          console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
         }
       }
-    
-      console.log('Datos comparados satisfactoriamente en la iteración: '+ i);
+      console.log('Datos comparados satisfactoriamente en la fila '+ i);
+      console.log('++++++++++++++++++++++++');
      }
 
     
