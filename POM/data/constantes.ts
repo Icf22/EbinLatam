@@ -3,7 +3,7 @@ export const URL= {
   }
   
    export const CREDENTIALS ={
-      USERNAME:'SantosQa',   //SantosQa    IsrraQA
+      USERNAME:'IsrraQA',   //SantosQa    IsrraQA
       PASSWORD:'Egl0bal2024*'
    }
 

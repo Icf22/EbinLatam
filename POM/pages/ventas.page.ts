@@ -15,7 +15,10 @@ readonly lbOpcionesFechaProceso: Locator;
 readonly txtAfiliacion: Locator;
 readonly txtNumeroCuenta: Locator;
 readonly txtAutorizacion: Locator;
-private datosExcel: any[] = [];
+private datosExcel29: any[] = [];
+private datosExcel26: any[] = [];
+private datosExcel30: any[] = [];
+
 
 
 constructor(page: Page){
@@ -71,15 +74,27 @@ async consultarVentasAceptadas(){
           let parcializadoPromocion= worksheet['AA'+i]?.w || '';
           let banderaTarjetaPresente= worksheet['AB'+i]?.w || '';
           let descripcionTipoMoneda= worksheet['AC'+i]?.w || '';
-          let tipoProceso = worksheet['AD'+ i]?.w || '';
-          let lote = worksheet['AE'+i]?.w || '';
-          let fechaDatePicker = worksheet['AF'+i]?.w || '';
+          let importePropina = worksheet['AD'+ i]?.w || '';
+          let tipoProceso = worksheet['AE'+ i]?.w || '';
+          let lote = worksheet['AF'+i]?.w || '';
+          let fechaDatePicker = worksheet['AG'+i]?.w || '';
 
       
-       this.datosExcel = [fecha, banco, codigoTransaccion, plataforma, codigoIntercambio, fechaTransaccion, horaTransaccion, numAfiliacion, 
+      this.datosExcel29 = [fecha, banco, codigoTransaccion, plataforma, codigoIntercambio, fechaTransaccion, horaTransaccion, numAfiliacion, 
         numReferenciaRrn, numCuenta, numCuenta2,referenciaIntercambio,numAutorizacion, importeTransaccion, importeCashback,
-         moneda, registroLog, emisor, codigoError, codigoRiesgo, codigoTipoProducto, numContrato, cuentaRecaudadora,codigoMedioAcceso,
+        moneda, registroLog, emisor, codigoError, codigoRiesgo, codigoTipoProducto, numContrato, cuentaRecaudadora,codigoMedioAcceso,
         codigoIndicadorComercioElectronico, diferimientoPromocion, parcializadoPromocion, banderaTarjetaPresente, descripcionTipoMoneda ];
+
+      this.datosExcel26 = [fecha, banco, codigoTransaccion, plataforma, fechaTransaccion, horaTransaccion, numAfiliacion, 
+        numReferenciaRrn, numCuenta, numCuenta2, numAutorizacion, importeTransaccion, importeCashback, importePropina , moneda, registroLog, emisor, codigoError, codigoRiesgo, codigoTipoProducto, codigoMedioAcceso, 
+        codigoIndicadorComercioElectronico, diferimientoPromocion, parcializadoPromocion, banderaTarjetaPresente, descripcionTipoMoneda ];
+
+      this.datosExcel30 = [fecha, banco, codigoTransaccion, plataforma, codigoIntercambio, fechaTransaccion, horaTransaccion, numAfiliacion, 
+        numReferenciaRrn, numCuenta, numCuenta2,referenciaIntercambio,numAutorizacion, importeTransaccion, importeCashback, importePropina,
+        moneda, registroLog, emisor, codigoError, codigoRiesgo, codigoTipoProducto, numContrato, cuentaRecaudadora,codigoMedioAcceso,
+        codigoIndicadorComercioElectronico, diferimientoPromocion, parcializadoPromocion, banderaTarjetaPresente, descripcionTipoMoneda ];
+    
+  
 
        await this.lbAdquiriente.click();
        await this.page.locator(`//div[text()='${banco}']`).click();
@@ -96,43 +111,62 @@ async consultarVentasAceptadas(){
        }
  }
 
-     async compararDetalleVenta(i){
-      
-      await this.page.waitForSelector('.col-12.row.q-mt-lg');
+ async compararDetalleVenta(i) {
+  await this.page.waitForSelector('.col-12.row.q-mt-lg');
 
-      const datosDelFrontend = await this.page.evaluate(() => {
-        const tabla = document.querySelector('.col-12.row.q-mt-lg');
-    
-        if (!tabla) {
-          console.log('tabla no existe');
-          return [];
-        }
-     const columnas = tabla.querySelectorAll('.col-6.text-left.text-grey-6.e-wrap-word');
-        const datos: string[] = [];
-        
-        columnas.forEach(elemento => {
-          const dato = elemento.textContent?.trim() ?? '';
-          datos.push(dato);
-        });
-        return datos;
-      });
-      //console.log('Datos del FrontEnd   ' +  datosDelFrontend);
-      //console.log('Datos del Excell ' + this.datosExcel);
-      const minLength = Math.min(this.datosExcel.length, datosDelFrontend.length);
-      for (let i = 0; i < minLength; i++) {
-        const datoExcel = this.datosExcel[i];
-        const datoFrontend = datosDelFrontend[i];
-       if (!datoExcel || !datoFrontend) {  
-          continue;
-        }
-         if (datoExcel !== datoFrontend) {
-          console.log(`Error en el registro ${i + 1} ` + '  Dato Excell ' + datoExcel + '  y de Front ' + datoFrontend );
-          console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
-        }
-      }
-      console.log('Datos comparados satisfactoriamente en la fila '+ i);
-      console.log('++++++++++++++++++++++++');
-     }
+  const datosDelFrontend = await this.page.evaluate(() => {
+    const tabla = document.querySelector('.col-12.row.q-mt-lg');
+
+    if (!tabla) {
+      console.log('tabla no existe');
+      return [];
+    }
+
+    const columnas = tabla.querySelectorAll('.col-6.text-left.text-grey-6.e-wrap-word');
+    const datos : string[] = [];
+
+    columnas.forEach(elemento => {
+      const dato = elemento.textContent?.trim() ?? '';
+      datos.push(dato);
+    });
+
+    return datos;
+  });
+
+  let datosExcelUsar: string[] = [];
+
+  if (datosDelFrontend.length === 29) {
+    datosExcelUsar = this.datosExcel29;
+    console.log("Matriz de 29 campos utilizada");
+  } else if (datosDelFrontend.length === 26) {
+    datosExcelUsar = this.datosExcel26;
+    console.log("Matriz de 26 campos utilizada");
+  } else if (datosDelFrontend.length === 30) {
+    datosExcelUsar = this.datosExcel30;
+    console.log("Matriz de 30 campos utilizada");
+  } else {
+    console.log('No se puede determinar qué datosExcel usar.');
+    return;
+  }
+  const minLength = Math.min(datosExcelUsar.length, datosDelFrontend.length);
+
+  for (let i = 0; i < minLength; i++) {
+    const datoExcel = datosExcelUsar[i];
+    const datoFrontend = datosDelFrontend[i];
+
+    if (!datoExcel || !datoFrontend) {
+      continue;
+    }
+    if (datoExcel !== datoFrontend) {
+      console.log(`Error en el registro ${i + 1} - Dato Excel: ${datoExcel} - Dato de Front: ${datoFrontend}`);
+      console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+    }
+  }
+
+  console.log('Datos comparados satisfactoriamente en la fila ' + i);
+  console.log('++++++++++++++++++++++++');
+}
+
 
     
 }
