@@ -44,4 +44,10 @@ export class BasePage {
         await this.page.getByText('Cerrar sesión').click();
     }
 
+    async cerrarNavegador(){
+        await this.page.close();
+      }
+
+    
+
 }
