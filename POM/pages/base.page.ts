@@ -40,12 +40,13 @@ export class BasePage {
     }
   
     async cerrarSesion(){
-        await this.page.getByRole('banner').getByRole('button', { name: 'Expandir' }).click();
-        await this.page.getByText('Cerrar sesión').click();
+        // await this.page.getByRole('banner').getByRole('button', { name: 'Expandir' }).click();
+        // await this.page.getByText('Cerrar sesión').click();
+        // await this.page.close();
     }
 
     async cerrarNavegador(){
-        await this.page.close();
+        // await this.page.close();
       }
 
     
