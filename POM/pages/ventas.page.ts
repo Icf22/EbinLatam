@@ -160,17 +160,20 @@ export class VentasPage extends BasePage {
 
         if (datosNoEncontrados.length > 0) {
             console.log('Datos de Excel no encontrados en el frontend en la fila', + i, ':');
+            console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
             datosNoEncontrados.forEach(dato => {
                 console.log(dato);
             });
         } else {
             console.log('Todos los datos de Excel se encontraron en el frontenden la fila', + i, ':');
+            console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
         }
 
     }
 
 
     async validarFuncionalidades() {
+
         await this.page.reload();
         await this.dateFechaInicial.fill('20230601');
         await this.dateFechaFinal.fill('20230701');
@@ -188,13 +191,14 @@ export class VentasPage extends BasePage {
         const ambosClicleables = await boton1.isEnabled() && await boton2.isEnabled();
         
         if (ambosClicleables) {
+            console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
             console.log('Ambos botones son clicleables.');
+            
             return 'Ambos botones se encuentran habilitados';
         } else {
+            console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
             console.log('Alguno o ambos botones no se encuentra disponibles para dar click');
             return 'Alguno o ambos botones no se encuentra disponibles para dar click';
         }
     }
-    
-
 }
