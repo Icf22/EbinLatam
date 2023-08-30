@@ -16,6 +16,7 @@ export class VentasPage extends BasePage {
     readonly txtAfiliacion : Locator;
     readonly txtNumeroCuenta : Locator;
     readonly txtAutorizacion : Locator;
+    readonly loteRandom : Locator;
     private datosExcel : any[] = [];
     public datosPublicos;
 
@@ -31,7 +32,8 @@ export class VentasPage extends BasePage {
         this.txtAutorizacion = page.getByPlaceholder('Número de autorización');
         this.btnConsultar = page.getByRole('button', {name: 'Consultar'});
         this.btnExportar = page.getByRole('button', {name: 'Exportar'});
-        this.lbAdquiriente = page.getByLabel('Adquirente*');
+        this.lbAdquiriente = page.getByText('arrow_drop_down').nth(1);
+        this.loteRandom = page.locator('.q-td.text-secondary').first();  
     }
 
     async consultarVentasAceptadas() {
@@ -45,7 +47,7 @@ export class VentasPage extends BasePage {
 
             for (let i = 2; i <= lastRow; i++) {
                 try {
-                    let fecha = worksheet['A' + i] ?. w || '';
+                    let fechaProceso = worksheet['A' + i] ?. w || '';
                     let banco = worksheet['B' + i] ?. w || '';
                     let codigoTransaccion = worksheet['C' + i] ?. w || '';
                     let plataforma = worksheet['D' + i] ?. w || '';
@@ -77,10 +79,11 @@ export class VentasPage extends BasePage {
                     let importePropina = worksheet['AD' + i] ?. w || '';
                     let tipoProceso = worksheet['AE' + i] ?. w || '';
                     let lote = worksheet['AF' + i] ?. w || '';
-                    let fechaDatePicker = worksheet['AG' + i] ?. w || '';
+                    let fechaInicial = worksheet['AG' + i] ?. w || '';
+                    let fechaFinal = worksheet['AH' + i] ?. w || '';
 
                     this.datosExcel = [
-                        fecha,
+                        fechaProceso,
                         banco,
                         codigoTransaccion,
                         plataforma,
@@ -112,12 +115,12 @@ export class VentasPage extends BasePage {
                         descripcionTipoMoneda
                     ];
 
-                    await this.lbAdquiriente.click();
+                    await this.lbAdquiriente.click(); 
                     await this.page.locator(`//div[text()='${banco}']`).click();
                     await this.lbFechaProceso.click();
                     await this.page.getByRole('listbox').getByText(tipoProceso).first().click();
-                    await this.dateFechaInicial.fill(fechaDatePicker);
-                    await this.dateFechaFinal.fill(fechaDatePicker);
+                    await this.dateFechaInicial.fill(fechaInicial);
+                    await this.dateFechaFinal.fill(fechaFinal);
                     await this.txtAfiliacion.fill(numAfiliacion);
                     await this.txtNumeroCuenta.fill(numCuenta);
                     await this.txtAutorizacion.fill(numAutorizacion);
@@ -181,6 +184,7 @@ export class VentasPage extends BasePage {
         await this.page.getByRole('listbox').getByText('Fecha Proceso').click();
         await this.btnConsultar.click();    
         const resultado = await this.validarPestañas();
+        await this.validarFuncionalidadExportar(); 
         console.log(resultado);
     }
 
@@ -192,13 +196,32 @@ export class VentasPage extends BasePage {
         
         if (ambosClicleables) {
             console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
-            console.log('Ambos botones son clicleables.');
+            console.log('Ambas Opciones de cambiar entre pestañas se encuentran habilitados');
             
             return 'Ambos botones se encuentran habilitados';
         } else {
             console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
-            console.log('Alguno o ambos botones no se encuentra disponibles para dar click');
+            console.log('Una o ambas opciones de cambio de pestaña no se encuentra disponibles para dar click');
             return 'Alguno o ambos botones no se encuentra disponibles para dar click';
         }
     }
+
+    async validarFuncionalidadExportar() {
+        this.loteRandom.click();
+        const btn = this.btnExportar;
+        const btnEnable = await btn.isVisible();
+
+        if (btnEnable) {
+            console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+            console.log('El botón se encuentra habilitado');
+            
+            return 'Ambos botones se encuentran habilitados';
+        } else {
+            console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+            console.log('El botón no se encuentra habilitado');
+            return 'Alguno o ambos botones no se encuentra disponibles para dar click';
+        }
+       
+    }
+    
 }

@@ -13,3 +13,5 @@ test('consultaVentasAceptadas', async ({page}) => {
     await basePage.cerrarSesion();
 
 })
+//Exportar
+//q-td   text-secondary
