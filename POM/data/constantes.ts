@@ -3,8 +3,19 @@ export const URL= {
   }
   
    export const CREDENTIALS ={
-      USERNAME:'SantosQa',   //SantosQa    IsrraQA
-      PASSWORD:'Egl0bal2024*'
+      // ** EBIND USER_EGLOBAL
+      USERNAME:'IsrraQA',   //SantosQa    IsrraQA
+      PASSWORD:'Egl0bal2024*',
+    
+      //**EBIND USER_ADQUIRIENTE */
+      USERNAME_ADQUIRIENTE: 'IsrraADQ',
+      PASSWORD_ADQUIRIENTE: 'Egl0bal2023*',
+      
+      //**EBIND USER_EG */
+      USERNAME_EG: 'IsrraEG',
+      PASSWORD_EG: 'Egl0bal2023*'
+   
+      
    }
 
    export const RUTAS = {
