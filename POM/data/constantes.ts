@@ -4,7 +4,7 @@ export const URL= {
   
    export const CREDENTIALS ={
       // ** EBIND USER_EGLOBAL
-      USERNAME:'IsrraQA',   //SantosQa    IsrraQA
+      USERNAME:'SantosQa',   //SantosQa    IsrraQA
       PASSWORD:'Egl0bal2024*',
     
       //**EBIND USER_ADQUIRIENTE */

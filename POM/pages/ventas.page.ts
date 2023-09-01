@@ -32,7 +32,7 @@ export class VentasPage extends BasePage {
         this.txtAutorizacion = page.getByPlaceholder('Número de autorización');
         this.btnConsultar = page.getByRole('button', {name: 'Consultar'});
         this.btnExportar = page.getByRole('button', {name: 'Exportar'});
-        this.lbAdquiriente = page.getByText('arrow_drop_down').nth(1);
+        this.lbAdquiriente = page.getByLabel('Adquirente*'); 
         this.loteRandom = page.locator('.q-td.text-secondary').first();  
     }
 
@@ -43,7 +43,7 @@ export class VentasPage extends BasePage {
             const worksheet = workbook.Sheets[workbook.SheetNames[0]];
             const lastRow = XLSX.utils.sheet_to_json(worksheet).length + 1;
             this.datosPublicos = XLSX.utils.sheet_to_json(worksheet);
-            //this.datosPublicos = worksheet; // workbook.Sheets[workbook.SheetNames[0]];
+        
 
             for (let i = 2; i <= lastRow; i++) {
                 try {
@@ -114,7 +114,6 @@ export class VentasPage extends BasePage {
                         banderaTarjetaPresente,
                         descripcionTipoMoneda
                     ];
-
                     await this.lbAdquiriente.click(); 
                     await this.page.locator(`//div[text()='${banco}']`).click();
                     await this.lbFechaProceso.click();
