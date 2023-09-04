@@ -40,7 +40,7 @@ export class BasePage {
     }
   
     async cerrarSesion(){
-         await this.page.getByRole('banner').getByRole('button', { name: 'Expandir' }).click();
+         await this.page.locator('button').filter({ hasText: 'arrow_drop_down' }).click();
          await this.page.getByText('Cerrar sesión').click();
          await this.page.close();
     }
