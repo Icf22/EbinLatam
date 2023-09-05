@@ -243,108 +243,6 @@ export class VentasPage extends BasePage {
         }
 
     }
-    ///****FLUJO VENTAS PERFIL EMISOR */
-    async consultarVentasAceptadasEmisor(){
-        try {
-            const filePath = RUTAS.FILEPATH;
-            const workbook = XLSX.readFile(filePath);
-            const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-            const lastRow = XLSX.utils.sheet_to_json(worksheet).length + 1;
-            this.datosPublicos = XLSX.utils.sheet_to_json(worksheet);
-
-            for (let i = 2; i <= lastRow; i++) {
-                try {
-                    let fechaProceso = worksheet['A' + i] ?. w || '';
-                    let banco = worksheet['B' + i] ?. w || '';
-                    let codigoTransaccion = worksheet['C' + i] ?. w || '';
-                    let plataforma = worksheet['D' + i] ?. w || '';
-                    let codigoIntercambio = worksheet['E' + i] ?. w || '';
-                    let fechaTransaccion = worksheet['F' + i] ?. w || '';
-                    let horaTransaccion = worksheet['G' + i] ?. w || '';
-                    let numAfiliacion = worksheet['H' + i] ?. w || '';
-                    let numReferenciaRrn = worksheet['I' + i] ?. w || '';
-                    let numCuenta = worksheet['J' + i] ?. w || '';
-                    let numCuenta2 = worksheet['K' + i] ?. w || '';
-                    let referenciaIntercambio = worksheet['L' + i] ?. w || '';
-                    let numAutorizacion = worksheet['M' + i] ?. w || '';
-                    let importeTransaccion = worksheet['N' + i] ?. w || '';
-                    let importeCashback = worksheet['O' + i] ?. w || '';
-                    let moneda = worksheet['P' + i] ?. w || '';
-                    let registroLog = worksheet['Q' + i] ?. w || '';
-                    let emisor = worksheet['R' + i] ?. w || '';
-                    let codigoError = worksheet['S' + i] ?. w || '';
-                    let codigoRiesgo = worksheet['T' + i] ?. w || '';
-                    let codigoTipoProducto = worksheet['U' + i] ?. w || '';
-                    let numContrato = worksheet['V' + i] ?. w || '';
-                    let cuentaRecaudadora = worksheet['W' + i] ?. w || '';
-                    let codigoMedioAcceso = worksheet['X' + i] ?. w || '';
-                    let codigoIndicadorComercioElectronico = worksheet['Y' + i] ?. w || '';
-                    let diferimientoPromocion = worksheet['Z' + i] ?. w || '';
-                    let parcializadoPromocion = worksheet['AA' + i] ?. w || '';
-                    let banderaTarjetaPresente = worksheet['AB' + i] ?. w || '';
-                    let descripcionTipoMoneda = worksheet['AC' + i] ?. w || '';
-                    let importePropina = worksheet['AD' + i] ?. w || '';
-                    let tipoProceso = worksheet['AE' + i] ?. w || '';
-                    let lote = worksheet['AF' + i] ?. w || '';
-                    let fechaInicial = worksheet['AG' + i] ?. w || '';
-                    let fechaFinal = worksheet['AH' + i] ?. w || '';
-
-                    this.datosExcel = [
-                        fechaProceso,
-                        banco,
-                        codigoTransaccion,
-                        plataforma,
-                        codigoIntercambio,
-                        fechaTransaccion,
-                        horaTransaccion,
-                        numAfiliacion,
-                        numReferenciaRrn,
-                        numCuenta,
-                        numCuenta2,
-                        referenciaIntercambio,
-                        numAutorizacion,
-                        importeTransaccion,
-                        importeCashback,
-                        importePropina,
-                        moneda,
-                        registroLog,
-                        emisor,
-                        codigoError,
-                        codigoRiesgo,
-                        codigoTipoProducto,
-                        numContrato,
-                        cuentaRecaudadora,
-                        codigoMedioAcceso,
-                        codigoIndicadorComercioElectronico,
-                        diferimientoPromocion,
-                        parcializadoPromocion,
-                        banderaTarjetaPresente,
-                        descripcionTipoMoneda
-                    ];
-
-                
-                    await this.dateFechaInicial.fill(fechaInicial);
-                    await this.dateFechaFinal.fill(fechaFinal);
-                    await this.txtAfiliacion.fill(numAfiliacion);
-                    await this.txtNumeroCuenta.fill(numCuenta);
-                    await this.txtAutorizacion.fill(numAutorizacion);
-                    await this.btnConsultar.click();
-                    await this.page.getByText(lote).click();
-                    await this.compararDetalleVenta(i);
-
-                } catch (error) {
-                    console.error('Error en la fila  ' + i + ':', error);
-                    this.cerrarSesion();
-                    this.cerrarNavegador();
-                }
-            }
-        } catch (error) {
-            console.error('Error al cargar el archivo de excell')
-            this.cerrarSesion();
-            this.cerrarNavegador();
-        }
- 
-    }
 
 
    ///****Métodos compartidos entre las clases */
@@ -399,8 +297,9 @@ export class VentasPage extends BasePage {
         await this.page.getByRole('listbox').getByText('Fecha Proceso').click();
         await this.btnConsultar.click();    
         const resultado = await this.validarPestañas();
-        await this.validarFuncionalidadExportar(); 
+        const resultado2 = await this.validarFuncionalidadExportar(); 
         console.log(resultado);
+        console.log(resultado2);
     } catch (error) {
         console.error('Error', error);
         this.cerrarSesion();
@@ -442,13 +341,10 @@ export class VentasPage extends BasePage {
 
         if (btn) {
             console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
-            console.log('El botón se encuentra habilitado');
-            
-            return 'Ambos botones se encuentran habilitados';
+            return 'El botón exportar se encuentra habilitado';
         } else {
             console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
-            console.log('El botón no se encuentra habilitado');
-            return 'Alguno o ambos botones no se encuentra disponibles para dar click';
+            return 'No se encuentra disponible el botón exportar';
         }
         } catch (error) {
         console.error('Error', error);

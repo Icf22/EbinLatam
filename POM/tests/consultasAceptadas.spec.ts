@@ -3,7 +3,7 @@ import {BasePage} from "../pages/base.page";
 import {VentasPage} from "../pages/ventas.page";
 
 test.use({ignoreHTTPSErrors: true});
-test.only('consultaVentasAceptadasEglobal', async ({page}) => {
+test('consultaVentasAceptadasEglobal', async ({page}) => {
     const basePage = new BasePage(page);
     const ventasPage = new VentasPage(page);
     await basePage.iniciarSesion('Eglobal');
@@ -26,13 +26,3 @@ test ('consultaVentasAceptadasAdquiriente', async ({page}) => {
 
 })
 
-test('consultaVentasAceptadasEmisor', async ({page}) => {
-    const basePage = new BasePage(page);
-    const ventasPage = new VentasPage(page);
-    await basePage.iniciarSesion('Emisor');
-    await basePage.menuConsultaVentas();
-    await ventasPage.consultarVentasAceptadasEmisor();
-    await ventasPage.validarFuncionalidades();
-    await basePage.cerrarSesion();
-
-})
