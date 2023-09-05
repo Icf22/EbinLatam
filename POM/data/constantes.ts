@@ -9,11 +9,8 @@ export const URL= {
       USERNAME_ADQUIRIENTE: 'IsrraADQ',
       PASSWORD_ADQUIRIENTE: 'Egl0bal2023*',
 
-      USERNAME_EMISOR: 'IsrraEG',
-      PASSWORD_EMISOR: 'Egl0bal2023*',
-
-   
-
+      USERNAME_EMISOR: 'EriEmis01',
+      PASSWORD_EMISOR: 'Egl0bal2026*',
    }
 
    export const RUTAS = {

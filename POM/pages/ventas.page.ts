@@ -322,8 +322,7 @@ export class VentasPage extends BasePage {
                         descripcionTipoMoneda
                     ];
 
-                    await this.lbFechaProceso.click();
-                    await this.page.getByRole('listbox').getByText(tipoProceso).first().click();
+                
                     await this.dateFechaInicial.fill(fechaInicial);
                     await this.dateFechaFinal.fill(fechaFinal);
                     await this.txtAfiliacion.fill(numAfiliacion);
@@ -350,9 +349,10 @@ export class VentasPage extends BasePage {
 
    ///****Métodos compartidos entre las clases */
     async compararDetalleVenta(i) {
-
+       try {
         await this.page.waitForSelector('.col-12.row.q-mt-lg');
         const datosDelFrontend = await this.page.evaluate(() => {
+            
             const tabla = document.querySelector('.col-12.row.q-mt-lg');
             if (! tabla) {
                 console.log('tabla no existe');
@@ -364,8 +364,9 @@ export class VentasPage extends BasePage {
                 const dato = elemento.textContent ?. trim() ?? '';
                 datos.push(dato);
             });
+            
             return datos;
-        });
+        })
 
         const datosNoEncontrados = this.datosExcel.filter(dato => dato.trim() !== '' && ! datosDelFrontend.includes(dato));
 
@@ -379,12 +380,18 @@ export class VentasPage extends BasePage {
             console.log('Todos los datos de Excel se encontraron en el frontenden la fila', + i, ':');
             console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
         }
-
+    } catch (error) {
+        console.error('Error en la fila  ' + i + ':', error);
+        this.cerrarSesion();
+        this.cerrarNavegador();
+    }
     }
 
 
     async validarFuncionalidades() {
-
+    try {
+        
+    
         await this.page.reload();
         await this.dateFechaInicial.fill('20230601');
         await this.dateFechaFinal.fill('20230701');
@@ -394,9 +401,17 @@ export class VentasPage extends BasePage {
         const resultado = await this.validarPestañas();
         await this.validarFuncionalidadExportar(); 
         console.log(resultado);
+    } catch (error) {
+        console.error('Error', error);
+        this.cerrarSesion();
+        this.cerrarNavegador();
+    }
     }
 
     async validarPestañas() {
+        try {
+            
+       
         const boton1 = await this.page.locator('button:nth-child(5)');
         const boton2 = await this.page.locator('button:nth-child(6)');
     
@@ -412,14 +427,20 @@ export class VentasPage extends BasePage {
             console.log('Una o ambas opciones de cambio de pestaña no se encuentra disponibles para dar click');
             return 'Alguno o ambos botones no se encuentra disponibles para dar click';
         }
+    } catch (error) {
+        console.error('Error', error);
+        this.cerrarSesion();
+        this.cerrarNavegador();
+    }
     }
 
     async validarFuncionalidadExportar() {
+        try {
         this.loteRandom.click();
-        const btn = this.btnExportar;
-        const btnEnable = await btn.isVisible();
+        const btn = await this.btnExportar.isEnabled();
+        //const btnEnable = await btn.isVisible();
 
-        if (btnEnable) {
+        if (btn) {
             console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
             console.log('El botón se encuentra habilitado');
             
@@ -429,7 +450,11 @@ export class VentasPage extends BasePage {
             console.log('El botón no se encuentra habilitado');
             return 'Alguno o ambos botones no se encuentra disponibles para dar click';
         }
-       
+        } catch (error) {
+        console.error('Error', error);
+        this.cerrarSesion();
+        this.cerrarNavegador();
+          }
     }
     
 }

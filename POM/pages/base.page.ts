@@ -55,14 +55,6 @@ export class BasePage {
         await this.btnLogIn.click();
     }
     
-    // async iniciarSesion(){
-    //     await this.page.goto(URL.EBINDLATAM);
-    //     await this.btnIniciarSesion.click();
-    //     await this.txtUserName.fill(CREDENTIALS.USERNAME);
-    //     await this.txtPassword.fill(CREDENTIALS.PASSWORD);
-    //     await this.btnLogIn.click();
-    // }
-
     async menuConsultaVentas(){
         await this.btnSubMenu.click();
         await this.btnVentas.click();
