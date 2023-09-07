@@ -26,21 +26,42 @@ export class BasePage {
 
     }
 
-    async iniciarSesion(){
+
+    async iniciarSesion(tipoDeContraseña) {
         await this.page.goto(URL.EBINDLATAM);
         await this.btnIniciarSesion.click();
-        await this.txtUserName.fill(CREDENTIALS.USERNAME);
-        await this.txtPassword.fill(CREDENTIALS.PASSWORD);
+        
+        let usuario;
+        let contraseña;
+        
+        switch (tipoDeContraseña) {
+            case 'Eglobal':
+                usuario = CREDENTIALS.USERNAME_EGLOBAL;
+                contraseña = CREDENTIALS.PASSWORD_EGLOBAL;
+                break;
+            case 'Adquiriente':
+                usuario = CREDENTIALS.USERNAME_ADQUIRIENTE;
+                contraseña = CREDENTIALS.PASSWORD_ADQUIRIENTE;
+                break;
+            case 'Emisor':
+                usuario = CREDENTIALS.USERNAME_EMISOR;
+                contraseña = CREDENTIALS.PASSWORD_EMISOR;
+                break;
+            default:
+                throw new Error('Tipo de contraseña no válido');
+        }
+        await this.txtUserName.fill(usuario);
+        await this.txtPassword.fill(contraseña);
         await this.btnLogIn.click();
     }
-
+    
     async menuConsultaVentas(){
         await this.btnSubMenu.click();
         await this.btnVentas.click();
     }
   
     async cerrarSesion(){
-         await this.page.getByRole('banner').getByRole('button', { name: 'Expandir' }).click();
+         await this.page.locator('button').filter({ hasText: 'arrow_drop_down' }).click();
          await this.page.getByText('Cerrar sesión').click();
          await this.page.close();
     }
