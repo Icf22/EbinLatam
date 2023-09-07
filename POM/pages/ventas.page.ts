@@ -33,6 +33,7 @@ export class VentasPage extends BasePage {
         this.btnConsultar = page.getByRole('button', {name: 'Consultar'});
         this.btnExportar = page.getByRole('button', { name: 'Exportar' });
         this.lbAdquiriente = page.locator('form').getByText('arrow_drop_down').first();
+
         this.loteRandom = page.locator('.q-td.text-secondary').first();  
     }
      ///****FLUJO VENTAS PERFIL EGLOBAL */
@@ -113,7 +114,6 @@ export class VentasPage extends BasePage {
                         banderaTarjetaPresente,
                         descripcionTipoMoneda
                     ];
-
                     await this.lbAdquiriente.click(); 
                     await this.page.locator(`//div[text()='${banco}']`).click();
                     await this.lbFechaProceso.click();
