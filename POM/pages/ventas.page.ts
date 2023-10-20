@@ -25,8 +25,8 @@ export class VentasPage extends BasePage {
         this.page = page;
         this.lbFechaProceso = page.getByText('arrow_drop_down').nth(2);
         this.lbOpcionesFechaProceso = page.getByRole('listbox').getByText('Fecha Proceso');
-        this.dateFechaInicial = page.getByLabel('Fecha inicial*');
-        this.dateFechaFinal = page.getByLabel('Fecha final*');
+        this.dateFechaInicial = page.getByLabel('Fecha inicial'); //('Fecha inicial*');
+        this.dateFechaFinal = page.getByLabel('Fecha final'); // ('Fecha final*');
         this.txtAfiliacion = page.getByLabel('Afiliación').first();
         this.txtNumeroCuenta = page.getByPlaceholder('Número de cuenta');
         this.txtAutorizacion = page.getByPlaceholder('Número de autorización');
@@ -41,46 +41,48 @@ export class VentasPage extends BasePage {
         try {
             const filePath = RUTAS.FILEPATH;
             const workbook = XLSX.readFile(filePath);
+            //const nameSheet = 'EGLOBAL BBVA PERU'
             const worksheet = workbook.Sheets[workbook.SheetNames[0]];
             const lastRow = XLSX.utils.sheet_to_json(worksheet).length + 1;
             this.datosPublicos = XLSX.utils.sheet_to_json(worksheet);
 
             for (let i = 2; i <= lastRow; i++) {
                 try {
-                    let fechaProceso = worksheet['A' + i] ?. w || '';
-                    let banco = worksheet['B' + i] ?. w || '';
-                    let codigoTransaccion = worksheet['C' + i] ?. w || '';
-                    let plataforma = worksheet['D' + i] ?. w || '';
-                    let codigoIntercambio = worksheet['E' + i] ?. w || '';
-                    let fechaTransaccion = worksheet['F' + i] ?. w || '';
-                    let horaTransaccion = worksheet['G' + i] ?. w || '';
-                    let numAfiliacion = worksheet['H' + i] ?. w || '';
-                    let numReferenciaRrn = worksheet['I' + i] ?. w || '';
-                    let numCuenta = worksheet['J' + i] ?. w || '';
-                    let numCuenta2 = worksheet['K' + i] ?. w || '';
-                    let referenciaIntercambio = worksheet['L' + i] ?. w || '';
-                    let numAutorizacion = worksheet['M' + i] ?. w || '';
-                    let importeTransaccion = worksheet['N' + i] ?. w || '';
-                    let importeCashback = worksheet['O' + i] ?. w || '';
-                    let moneda = worksheet['P' + i] ?. w || '';
-                    let registroLog = worksheet['Q' + i] ?. w || '';
-                    let emisor = worksheet['R' + i] ?. w || '';
-                    let codigoError = worksheet['S' + i] ?. w || '';
-                    let codigoRiesgo = worksheet['T' + i] ?. w || '';
-                    let codigoTipoProducto = worksheet['U' + i] ?. w || '';
-                    let numContrato = worksheet['V' + i] ?. w || '';
-                    let cuentaRecaudadora = worksheet['W' + i] ?. w || '';
-                    let codigoMedioAcceso = worksheet['X' + i] ?. w || '';
-                    let codigoIndicadorComercioElectronico = worksheet['Y' + i] ?. w || '';
-                    let diferimientoPromocion = worksheet['Z' + i] ?. w || '';
-                    let parcializadoPromocion = worksheet['AA' + i] ?. w || '';
-                    let banderaTarjetaPresente = worksheet['AB' + i] ?. w || '';
-                    let descripcionTipoMoneda = worksheet['AC' + i] ?. w || '';
-                    let importePropina = worksheet['AD' + i] ?. w || '';
-                    let tipoProceso = worksheet['AE' + i] ?. w || '';
-                    let lote = worksheet['AF' + i] ?. w || '';
-                    let fechaInicial = worksheet['AG' + i] ?. w || '';
-                    let fechaFinal = worksheet['AH' + i] ?. w || '';
+                    let fechaInicial = worksheet['A' + i] ?. w || '';
+                    let fechaFinal = worksheet['B' + i] ?. w || '';
+                    let fechaProceso = worksheet['C' + i] ?. w || '';
+                    let banco = worksheet['D' + i] ?. w || '';
+                    let codigoTransaccion = worksheet['E' + i] ?. w || '';
+                    let plataforma = worksheet['F' + i] ?. w || '';
+                    let codigoIntercambio = worksheet['G' + i] ?. w || '';
+                    let fechaTransaccion = worksheet['H' + i] ?. w || '';
+                    let horaTransaccion = worksheet['I' + i] ?. w || '';
+                    let numAfiliacion = worksheet['J' + i] ?. w || '';
+                    let numReferenciaRrn = worksheet['K' + i] ?. w || '';
+                    let numCuenta = worksheet['L' + i] ?. w || '';
+                    let numCuenta2 = worksheet['M' + i] ?. w || '';
+                    let referenciaIntercambio = worksheet['N' + i] ?. w || '';
+                    let numAutorizacion = worksheet['O' + i] ?. w || '';
+                    let importeTransaccion = worksheet['P' + i] ?. w || '';
+                    let importeCashback = worksheet['Q' + i] ?. w || '';
+                    let moneda = worksheet['R' + i] ?. w || '';
+                    let registroLog = worksheet['S' + i] ?. w || '';
+                    let emisor = worksheet['T' + i] ?. w || '';
+                    let codigoError = worksheet['U' + i] ?. w || '';
+                    let codigoRiesgo = worksheet['V' + i] ?. w || '';
+                    let codigoTipoProducto = worksheet['W' + i] ?. w || '';
+                    let numContrato = worksheet['X' + i] ?. w || '';
+                    let cuentaRecaudadora = worksheet['Y' + i] ?. w || '';
+                    let codigoMedioAcceso = worksheet['Z' + i] ?. w || '';
+                    let codigoIndicadorComercioElectronico = worksheet['AA' + i] ?. w || '';
+                    let diferimientoPromocion = worksheet['AB' + i] ?. w || '';
+                    let parcializadoPromocion = worksheet['AC' + i] ?. w || '';
+                    let banderaTarjetaPresente = worksheet['AD' + i] ?. w || '';
+                    let descripcionTipoMoneda = worksheet['AE' + i] ?. w || '';
+                    let importePropina = worksheet['AF' + i] ?. w || '';
+                    let tipoProceso = worksheet['AG' + i] ?. w || '';
+                    let lote = worksheet['AH' + i] ?. w || '';
+                    
 
                     this.datosExcel = [
                         fechaProceso,
@@ -115,9 +117,10 @@ export class VentasPage extends BasePage {
                         descripcionTipoMoneda
                     ];
                     await this.lbAdquiriente.click(); 
-                    await this.page.locator(`//div[text()='${banco}']`).click();
+                    await this.page.getByText(banco).click();           // await this.page.locator(`//div[text()='${banco}']`).click();
                     await this.lbFechaProceso.click();
                     await this.page.getByRole('listbox').getByText(tipoProceso).first().click();
+                    await this.dateFechaInicial.click();
                     await this.dateFechaInicial.fill(fechaInicial);
                     await this.dateFechaFinal.fill(fechaFinal);
                     await this.txtAfiliacion.fill(numAfiliacion);
@@ -128,12 +131,14 @@ export class VentasPage extends BasePage {
                     await this.compararDetalleVenta(i);
 
                 } catch (error) {
+                    console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
                     console.error('Error en la fila  ' + i + ':', error);
                     this.cerrarSesion();
                     this.cerrarNavegador();
                 }
             }
         } catch (error) {
+            console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
             console.error('Error al cargar el archivo de excell')
             this.cerrarSesion();
             this.cerrarNavegador();
@@ -152,40 +157,40 @@ export class VentasPage extends BasePage {
 
             for (let i = 2; i <= lastRow; i++) {
                 try {
-                    let fechaProceso = worksheet['A' + i] ?. w || '';
-                    let banco = worksheet['B' + i] ?. w || '';
-                    let codigoTransaccion = worksheet['C' + i] ?. w || '';
-                    let plataforma = worksheet['D' + i] ?. w || '';
-                    let codigoIntercambio = worksheet['E' + i] ?. w || '';
-                    let fechaTransaccion = worksheet['F' + i] ?. w || '';
-                    let horaTransaccion = worksheet['G' + i] ?. w || '';
-                    let numAfiliacion = worksheet['H' + i] ?. w || '';
-                    let numReferenciaRrn = worksheet['I' + i] ?. w || '';
-                    let numCuenta = worksheet['J' + i] ?. w || '';
-                    let numCuenta2 = worksheet['K' + i] ?. w || '';
-                    let referenciaIntercambio = worksheet['L' + i] ?. w || '';
-                    let numAutorizacion = worksheet['M' + i] ?. w || '';
-                    let importeTransaccion = worksheet['N' + i] ?. w || '';
-                    let importeCashback = worksheet['O' + i] ?. w || '';
-                    let moneda = worksheet['P' + i] ?. w || '';
-                    let registroLog = worksheet['Q' + i] ?. w || '';
-                    let emisor = worksheet['R' + i] ?. w || '';
-                    let codigoError = worksheet['S' + i] ?. w || '';
-                    let codigoRiesgo = worksheet['T' + i] ?. w || '';
-                    let codigoTipoProducto = worksheet['U' + i] ?. w || '';
-                    let numContrato = worksheet['V' + i] ?. w || '';
-                    let cuentaRecaudadora = worksheet['W' + i] ?. w || '';
-                    let codigoMedioAcceso = worksheet['X' + i] ?. w || '';
-                    let codigoIndicadorComercioElectronico = worksheet['Y' + i] ?. w || '';
-                    let diferimientoPromocion = worksheet['Z' + i] ?. w || '';
-                    let parcializadoPromocion = worksheet['AA' + i] ?. w || '';
-                    let banderaTarjetaPresente = worksheet['AB' + i] ?. w || '';
-                    let descripcionTipoMoneda = worksheet['AC' + i] ?. w || '';
-                    let importePropina = worksheet['AD' + i] ?. w || '';
-                    let tipoProceso = worksheet['AE' + i] ?. w || '';
-                    let lote = worksheet['AF' + i] ?. w || '';
-                    let fechaInicial = worksheet['AG' + i] ?. w || '';
-                    let fechaFinal = worksheet['AH' + i] ?. w || '';
+                    let fechaProceso = worksheet['C' + i] ?. w || '';
+                    let banco = worksheet['D' + i] ?. w || '';
+                    let codigoTransaccion = worksheet['E' + i] ?. w || '';
+                    let plataforma = worksheet['F' + i] ?. w || '';
+                    let codigoIntercambio = worksheet['G' + i] ?. w || '';
+                    let fechaTransaccion = worksheet['H' + i] ?. w || '';
+                    let horaTransaccion = worksheet['I' + i] ?. w || '';
+                    let numAfiliacion = worksheet['J' + i] ?. w || '';
+                    let numReferenciaRrn = worksheet['K' + i] ?. w || '';
+                    let numCuenta = worksheet['L' + i] ?. w || '';
+                    let numCuenta2 = worksheet['M' + i] ?. w || '';
+                    let referenciaIntercambio = worksheet['N' + i] ?. w || '';
+                    let numAutorizacion = worksheet['O' + i] ?. w || '';
+                    let importeTransaccion = worksheet['P' + i] ?. w || '';
+                    let importeCashback = worksheet['Q' + i] ?. w || '';
+                    let moneda = worksheet['R' + i] ?. w || '';
+                    let registroLog = worksheet['S' + i] ?. w || '';
+                    let emisor = worksheet['T' + i] ?. w || '';
+                    let codigoError = worksheet['U' + i] ?. w || '';
+                    let codigoRiesgo = worksheet['V' + i] ?. w || '';
+                    let codigoTipoProducto = worksheet['W' + i] ?. w || '';
+                    let numContrato = worksheet['X' + i] ?. w || '';
+                    let cuentaRecaudadora = worksheet['Y' + i] ?. w || '';
+                    let codigoMedioAcceso = worksheet['Z' + i] ?. w || '';
+                    let codigoIndicadorComercioElectronico = worksheet['AA' + i] ?. w || '';
+                    let diferimientoPromocion = worksheet['AB' + i] ?. w || '';
+                    let parcializadoPromocion = worksheet['AC' + i] ?. w || '';
+                    let banderaTarjetaPresente = worksheet['AD' + i] ?. w || '';
+                    let descripcionTipoMoneda = worksheet['AE' + i] ?. w || '';
+                    let importePropina = worksheet['AF' + i] ?. w || '';
+                    let tipoProceso = worksheet['AG' + i] ?. w || '';
+                    let lote = worksheet['AH' + i] ?. w || '';
+                    let fechaInicial = worksheet['A' + i] ?. w || '';
+                    let fechaFinal = worksheet['B' + i] ?. w || '';
 
                     this.datosExcel = [
                         fechaProceso,
@@ -237,6 +242,7 @@ export class VentasPage extends BasePage {
                 }
             }
         } catch (error) {
+            console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
             console.error('Error al cargar el archivo de excell')
             this.cerrarSesion();
             this.cerrarNavegador();
@@ -269,14 +275,15 @@ export class VentasPage extends BasePage {
         const datosNoEncontrados = this.datosExcel.filter(dato => dato.trim() !== '' && ! datosDelFrontend.includes(dato));
 
         if (datosNoEncontrados.length > 0) {
-            console.log('Datos de Excel no encontrados en el frontend en la fila', + i, ':');
             console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+            console.log('Datos de Excel no encontrados en el frontend en la fila', + i, ':');
             datosNoEncontrados.forEach(dato => {
                 console.log(dato);
             });
         } else {
-            console.log('Todos los datos de Excel se encontraron en el frontenden la fila', + i, ':');
             console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+            console.log('Todos los datos de Excel se encontraron en el frontenden la fila', + i, ':');
+  
         }
     } catch (error) {
         console.error('Error en la fila  ' + i + ':', error);
@@ -288,8 +295,6 @@ export class VentasPage extends BasePage {
 
     async validarFuncionalidades() {
     try {
-        
-    
         await this.page.reload();
         await this.dateFechaInicial.fill('20230601');
         await this.dateFechaFinal.fill('20230701');

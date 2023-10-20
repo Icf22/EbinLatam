@@ -3,7 +3,7 @@ export const URL= {
   }
   
    export const CREDENTIALS ={
-      USERNAME_EGLOBAL:'SantosQa',   //SantosQa  IsrraQA
+      USERNAME_EGLOBAL:'IsrraQA',   //SantosQa  IsrraQA
       PASSWORD_EGLOBAL:'Egl0bal2024*',
       
       USERNAME_ADQUIRIENTE: 'IsrraADQ',
@@ -12,6 +12,8 @@ export const URL= {
       USERNAME_EMISOR: 'EriEmis01',
       PASSWORD_EMISOR: 'Egl0bal2026*',
    }
+
+   
 
    export const RUTAS = {
       FILEPATH : './resources/insumoEbindLatam.xlsx'
