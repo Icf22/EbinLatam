@@ -4,7 +4,7 @@ import {VentasPage} from "../pages/ventas.page";
 
 test.use({ignoreHTTPSErrors: true});
 
-test.only('consultaVentasAceptadasEglobal', async ({page}) => {
+test('consultaVentasAceptadasEglobal', async ({page}) => {
     const basePage = new BasePage(page);
     const ventasPage = new VentasPage(page);
     await basePage.iniciarSesion('Eglobal');
