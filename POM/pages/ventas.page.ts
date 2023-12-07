@@ -22,7 +22,7 @@ export class VentasPage extends BasePage {
 
     constructor(page : Page) {
         super(page);
-        this.page = page;
+        this.page = page; //--revisar si este es necesario
         this.lbFechaProceso = page.getByText('arrow_drop_down').nth(2);
         this.lbOpcionesFechaProceso = page.getByRole('listbox').getByText('Fecha Proceso');
         this.dateFechaInicial = page.getByLabel('Fecha inicial'); //('Fecha inicial*');
@@ -39,7 +39,7 @@ export class VentasPage extends BasePage {
      ///****FLUJO VENTAS PERFIL EGLOBAL */
     async consultarVentasAceptadasEglobal() {
         try {
-            const filePath = RUTAS.FILEPATH;
+            const filePath = RUTAS.moduloVentas;
             const workbook = XLSX.readFile(filePath);
             //const nameSheet = 'EGLOBAL BBVA PERU'
             const worksheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -117,7 +117,7 @@ export class VentasPage extends BasePage {
                         descripcionTipoMoneda
                     ];
                     await this.lbAdquiriente.click(); 
-                    await this.page.getByText(banco).click();           // await this.page.locator(`//div[text()='${banco}']`).click();
+                    await this.page.getByText(banco).click();  // await this.page.locator(`//div[text()='${banco}']`).click();
                     await this.lbFechaProceso.click();
                     await this.page.getByRole('listbox').getByText(tipoProceso).first().click();
                     await this.dateFechaInicial.click();
@@ -148,7 +148,7 @@ export class VentasPage extends BasePage {
     ///****FLUJO VENTAS PERFIL ADQUIERIENTE */
     async consultarVentasAceptadasAdquiriente(){
         try {
-            const filePath = RUTAS.FILEPATH;
+            const filePath = RUTAS.moduloVentas;
             const workbook = XLSX.readFile(filePath);
             const worksheet = workbook.Sheets[workbook.SheetNames[0]];
             const lastRow = XLSX.utils.sheet_to_json(worksheet).length + 1;
