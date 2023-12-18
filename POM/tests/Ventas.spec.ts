@@ -4,28 +4,25 @@ import {VentasPage} from "../pages/ventas.page";
 
 test.use({ignoreHTTPSErrors: true});
 
-test.only('consultaVentasAceptadasEglobalSimple', async ({page}) => {
+test.only('consultaVentasAceptadasSimple', async ({page}) => {
     const basePage = new BasePage(page);
     const ventasPage = new VentasPage(page);
     await basePage.iniciarSesion('Eglobal');
     await basePage.menuConsultaVentas();
     await ventasPage.consultarVentasAceptadasEglobal();
-    //await ventasPage.validarFuncionalidades();
     await basePage.cerrarSesion();
 })
-
-test.only('consultaVentasRechazadasEglobalSimple', async ({page}) => {
+test('consultaVentasRechazadasSimple', async ({page}) => {
     const basePage = new BasePage(page);
     const ventasPage = new VentasPage(page);
     await basePage.iniciarSesion('Eglobal');
     await basePage.menuConsultaVentas();
     await ventasPage.consultarVentasRechazadasEglobal();
-    //await ventasPage.validarFuncionalidades();
     await basePage.cerrarSesion();
 })
 
 
-test('consultaVentasAceptadasEglobalFullValidation', async ({page}) => {
+test('consultaVentasAceptadasFullValidation', async ({page}) => {
     const basePage = new BasePage(page);
     const ventasPage = new VentasPage(page);
     await basePage.iniciarSesion('Eglobal');
@@ -34,7 +31,7 @@ test('consultaVentasAceptadasEglobalFullValidation', async ({page}) => {
     await ventasPage.validarFuncionalidades();
     await basePage.cerrarSesion();
 })
-test('consultaVentasAceptadasAdquirienteFullValidation', async ({page}) => {
+test('consultaVentasRechazadasFullValidation', async ({page}) => {
     const basePage = new BasePage(page);
     const ventasPage = new VentasPage(page);
     await basePage.iniciarSesion('Adquiriente');

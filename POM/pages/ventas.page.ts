@@ -1,4 +1,4 @@
-import {Locator, Page, errors} from "@playwright/test";
+import {Locator, Page, errors, expect} from "@playwright/test";
 import {RUTAS} from "../data/constantes";
 import * as XLSX from 'xlsx';
 import {BasePage} from "../pages/base.page";
@@ -70,9 +70,22 @@ export class VentasPage extends BasePage {
                     await this.txtNumeroCuenta.fill(numCuenta);
                     await this.txtAutorizacion.fill(numAutorizacion);
                     await this.btnConsultar.click();
-                    //await this.page.getByText(lote).click();
-        
-
+                    const mensaje = await buscarTexto(this.page);
+                    console.log("En el registro: " + i  , mensaje);
+                    async function buscarTexto(page: Page): Promise<string> {
+                        const content = await page.content();
+                        const result = await page.evaluate(() => {
+                          const element = document.querySelector(".col-12.text-left.q-mb-md.text-primary.text-body1");
+                          if (element) {
+                            return element?.textContent || "";
+                          } else {
+                            return "";
+                          }
+                        });
+                        return result;
+                      }
+                     
+                    
                 } catch (error) {
                     console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
                     console.error('Error en la fila  ' + i + ':', error);
@@ -121,8 +134,23 @@ export class VentasPage extends BasePage {
                     await this.txtNumeroCuenta.fill(numCuenta);
                     await this.txtAutorizacion.fill(numAutorizacion);
                     await this.btnConsultar.click();
-                    //await this.page.getByText(lote).click();
-                
+                    const mensaje = await verificarTexto(this.page);
+                    console.log(mensaje);
+                    
+                    async function verificarTexto(params:Page) { //params:Page
+                    const elementos0 = await document.querySelectorAll('[text()="Ventas recuperadas: 0"]');// Verificar si se encontró algún elemento
+                    if (elementos0.length > 0) {
+                    var mensaje =  console.log ("no se encontro el registros")
+                    } else {
+                    }
+                    const elementos1 = await document.querySelectorAll('[text()="Ventas recuperadas: 1"]');
+                    if (elementos1.length > 0) {
+                    var mensaje = console.log("Se encontro el registro")
+                    } else {
+                    } return mensaje;
+                    }
+
+                   
 
                 } catch (error) {
                     console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
