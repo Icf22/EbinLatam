@@ -13,6 +13,6 @@ export const URL= {
       PASSWORD_EMISOR: 'Egl0bal2026*',
    }
    export const RUTAS = {
-      moduloVentas : './resources/insumoEbindLatam.xlsx',
+      moduloVentas : './resources/insumoModuloVentas.xlsx',
       moduloGestionControversias : './resources/insumoControversias.xlsx'
    }

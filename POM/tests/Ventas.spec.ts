@@ -4,7 +4,25 @@ import {VentasPage} from "../pages/ventas.page";
 
 test.use({ignoreHTTPSErrors: true});
 
-test('consultaVentasAceptadasEglobal', async ({page}) => {
+test.only('consultaVentasAceptadasSimple', async ({page}) => {
+    const basePage = new BasePage(page);
+    const ventasPage = new VentasPage(page);
+    await basePage.iniciarSesion('Eglobal');
+    await basePage.menuConsultaVentas();
+    await ventasPage.consultarVentasAceptadasEglobal();
+    await basePage.cerrarSesion();
+})
+test('consultaVentasRechazadasSimple', async ({page}) => {
+    const basePage = new BasePage(page);
+    const ventasPage = new VentasPage(page);
+    await basePage.iniciarSesion('Eglobal');
+    await basePage.menuConsultaVentas();
+    await ventasPage.consultarVentasRechazadasEglobal();
+    await basePage.cerrarSesion();
+})
+
+
+test('consultaVentasAceptadasFullValidation', async ({page}) => {
     const basePage = new BasePage(page);
     const ventasPage = new VentasPage(page);
     await basePage.iniciarSesion('Eglobal');
@@ -13,7 +31,7 @@ test('consultaVentasAceptadasEglobal', async ({page}) => {
     await ventasPage.validarFuncionalidades();
     await basePage.cerrarSesion();
 })
-test('consultaVentasAceptadasAdquiriente', async ({page}) => {
+test('consultaVentasRechazadasFullValidation', async ({page}) => {
     const basePage = new BasePage(page);
     const ventasPage = new VentasPage(page);
     await basePage.iniciarSesion('Adquiriente');

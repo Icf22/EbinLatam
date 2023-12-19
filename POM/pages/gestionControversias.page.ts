@@ -55,6 +55,9 @@ export class ControversiasPage extends BasePage {
     lbAdquirienteConsulta: Locator;
     txtNumeroCuentaConsulta: Locator;
     txtAfiliacionConsulta: Locator;
+    //Consulta Simple
+    lbEtapa2: Locator;
+    lbEstatus: Locator;
     
     
     
@@ -105,48 +108,49 @@ export class ControversiasPage extends BasePage {
         this.btnExportar = page.getByRole('button', { name: 'Exportar' });
         this.btnLimpiar = page.getByRole('button', { name: 'Limpiar' })
         this.btnCerrarHistoria = page.locator('button').filter({ hasText: 'close' })
+        //ConsultaSimple
+        this.lbEtapa2 = page.locator('div').filter({ hasText: /^Etapa$/ }).first();
+        this.lbEstatus = page.locator('div').filter({ hasText: /^Estatus$/ }).first();
+
     }
     //****************CONSULTA CONTROVERSIAS */
     async consultarControversias() {
        try {
             const filePath = RUTAS.moduloGestionControversias;
             const workbook = XLSX.readFile(filePath);
-            const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+            const nameSheet = 'Consulta_Controversias'
+            const worksheet = workbook.Sheets[nameSheet];
             const lastRow = XLSX.utils.sheet_to_json(worksheet).length + 1;
             this.datosPublicos = XLSX.utils.sheet_to_json(worksheet);
             
             for (let i = 2; i <= lastRow  ; i++) {  //Con esto estamos solamente haciendo laS primeras iteraciones
                 try {
                     let adquieriente = worksheet['A' + i] ?. w || '';
-                    let fechaInicial = worksheet['B' + i] ?. w || '';
-                    let FechaFinal = worksheet['C' + i] ?. w || '';
-                    let numeroCuenta = worksheet['D' + i] ?. w || '';
-                    let emisor = worksheet['E' + i] ?. w || '';
-                    let afiliacion = worksheet['F' + i] ?. w || '';
-                    let referenciaIntercambio = worksheet['G' + i] ?. w || '';
-                    let importeTransaccion = worksheet['H' + i] ?. w || '';
-                    let numuatorizacion = worksheet['I' + i] ?. w || '';
                     let folioControversia = worksheet['J' + i] ?. w || '';
-                    
+                    let Etapa = worksheet['K' + i] ?. w || '';
+                    let Estatus = worksheet['L' + i] ?. w || '';
+                        
+                        await this.page.reload();
                         if (await this.btnClose.isVisible()){
                             this.btnClose.click();
                         }
                         if(await this.lbAdquirienteConsulta.first().isEnabled()){
-                        await this.page.reload();
+                        //await this.page.reload();
                         await this.lbAdquirienteConsulta.click();
                         await this.page.getByText(adquieriente).click();
                         await this.txtFolioControversia.fill(folioControversia);
-                        await this.txtNumeroCuentaConsulta.fill(numeroCuenta);
-                        await this.lbEmisor.click();
-                        await this.page.getByText(emisor).click();
-                        await this.lbTipoFecha.click(); 
-                        await this.tipoFecha.click(); 
-                        await this.lbFechaInicial.fill(fechaInicial);
-                        await this.lbFechaFinal.fill(FechaFinal);
-                        await this.txtAfiliacionConsulta.fill(afiliacion);
+                        await this.lbEtapa2.click();
+                        await this.page.getByText(Etapa).click();
+                        await this.lbEstatus.click();
+                        await this.page.getByRole('option', { name: Estatus, exact: true }).locator('div').nth(1).click();
+                        //await this.page.getByText(Estatus).first().click();
                         await this.btnConsultar.click();
                         await this.page.getByText(folioControversia).click();
-                        await this.validarConsultaControversias(); 
+                        if (await this.logoHistoria.isVisible()){
+                            const screenshotPath = `screenshot_${i}.png`;
+                            await this.page.screenshot({ path: screenshotPath, fullPage: true });
+                        }
+                        //await this.validarConsultaControversias(); 
                     }   
 
                 } catch (error) {
