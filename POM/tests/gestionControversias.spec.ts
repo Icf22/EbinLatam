@@ -6,7 +6,7 @@ test.use({ignoreHTTPSErrors: true});
 
 
 
-test.only('consultaControversias', async ({page}) => {
+test('consultaControversias', async ({page}) => {
    const controversias = new ControversiasPage(page);
    const basePage = new BasePage(page);
    await basePage.iniciarSesion('Eglobal');
@@ -16,7 +16,7 @@ test.only('consultaControversias', async ({page}) => {
 })
 
 
-test('altaControversias',async ({page}) => {
+test.only('altaControversias',async ({page}) => {
    const controversias = new ControversiasPage(page);
    const basePage = new BasePage(page);
    await basePage.iniciarSesion('Eglobal');
