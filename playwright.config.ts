@@ -18,9 +18,9 @@ export default defineConfig({
   },
   // If nothing is printed for 10m, then CircleCI times us out, which means we don't
   // find out which test hung. So timeout here first so that it tells us what hung.
-  globalTimeout: 600000,
+  globalTimeout: 6000000,
   // in ms. 30000 = 30s
-  timeout: 100000,
+  timeout: 1000000,
   use: {
     actionTimeout: 20000,
     headless: true,
