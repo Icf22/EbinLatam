@@ -283,8 +283,21 @@ try {
         //await this.btnPrimeraOpcion.click(); Esta opción desapareció 06/12/2023
         await this.btnSiguienteHome.click(); 
         await this.btnGuardar.click();
+
+       
+        const controversia = await this.page.locator("(//div[@class='col-6 text-left text-grey-6 e-wrap-word'])[1]").innerText()
+        const estatus = await this.page.locator("(//div[@class='col-6 text-left text-grey-6 e-wrap-word'])[2]").innerText()
+        const motivoEstatus = await this.page.locator("(//div[@class='col-6 text-left text-grey-6 e-wrap-word'])[3]").innerText()
+        const reverso = await this.page.locator("(//div[@class='col-6 text-left text-grey-6 e-wrap-word'])[4]").innerText()
+    
+        console.log("Controversia: "+controversia)
+        console.log("Estatus: "+estatus)
+        console.log("Motivo Estatus: "+motivoEstatus)
+        console.log("Reverso: "+reverso)
+        console.log("---------------------------------")
+
         await this.btnAceptar.click();
-        
+
         }
     
 }
