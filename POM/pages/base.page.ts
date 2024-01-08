@@ -22,8 +22,8 @@ export class BasePage {
         this.txtPassword = page.getByPlaceholder('Password');
         this.btnLogIn = page.getByRole('button', { name: 'Log in' });
         this.btnSubMenu = page.getByText('more_horiz');
-        this.btnVentas =  page.locator('.q-icon.ebind-icons.icon-icon_ventas').first();                    //ebind-icons icon-consulta-log q-icon notranslate
-        this.btnGestionCotroversias = page.locator('.q-icon.icon-Gestion-de-controversias').first();//page.locator('a').filter({ hasText: 'Gestión de controversias'});//ebind-icons icon-Gestion-de-controversias q-icon notranslate        
+        this.btnVentas =  page.locator('.q-icon.ebind-icons.icon-icon_ventas').first();                   
+        this.btnGestionCotroversias = page.locator('.q-icon.icon-Gestion-de-controversias').first();
     }
 
 
@@ -70,16 +70,8 @@ export class BasePage {
   
     async cerrarSesion(){
          
-        // await this.page.getByLabel('Expandir').click();  //revisar esto por que el código de arriba no cierra sesión
-        await this.page.locator("(//button[@aria-label='Expandir'])[1]").click();
+        await this.page.locator('button').filter({ hasText: 'arrow_drop_down' }).click();
         await this.page.getByText('Cerrar sesión').click();
-        // await this.page.locator('button').filter({ hasText: 'arrow_drop_down' }).click();
-        //  await this.page.getByText('Cerrar sesión').click();
-        //  await this.page.close();
-
-        // await page.getByLabel('Expandir').click();
-        // await page.getByText('Cerrar sesión').click();
-
     }
 
     async handleError(message: string, error: any) {
@@ -91,6 +83,4 @@ export class BasePage {
     async cerrarNavegador(){
          await this.page.close();
       }
-
-
 }

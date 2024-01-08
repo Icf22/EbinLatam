@@ -59,8 +59,6 @@ export class ControversiasPage extends BasePage {
     lbEtapa2: Locator;
     lbEstatus: Locator;
     
-    
-    
     constructor(page : Page) {
         super(page);
         //GENERAL
@@ -86,7 +84,7 @@ export class ControversiasPage extends BasePage {
         this.logoComplementoLog = page.getByText('editComplemento log'); 
         this.logoInformacionAdicional = page.getByText('editInformación adicional'); 
         this.logoAltaCorrecta = page.getByText('La controversia fue ingresada correctamente:');
-        this.btnAceptar = page.getByRole('button', { name: 'Aceptar' }); //Se usa en la etapa final, Aquí podríamos tomar un ScreenShoot
+        this.btnAceptar = page.getByRole('button', { name: 'Aceptar' });
         this.lbTipoMoneda = page.locator('label').filter({ hasText: 'SolesMoneda*closearrow_drop_down' }).locator('i').nth(1);
         this.btnGuardar = page.getByRole('button', { name: 'Guardar' });
         this.btnClose = page.getByText('close').nth(1);
@@ -114,7 +112,7 @@ export class ControversiasPage extends BasePage {
 
     }
     //****************CONSULTA CONTROVERSIAS */
-    async consultarControversias() {
+    async consultarControversiasSimple() {
        try {
             const filePath = RUTAS.moduloGestionControversias;
             const workbook = XLSX.readFile(filePath);
@@ -123,7 +121,7 @@ export class ControversiasPage extends BasePage {
             const lastRow = XLSX.utils.sheet_to_json(worksheet).length + 1;
             this.datosPublicos = XLSX.utils.sheet_to_json(worksheet);
             
-            for (let i = 2; i <= lastRow  ; i++) {  //Con esto estamos solamente haciendo laS primeras iteraciones
+            for (let i = 2; i <= lastRow  ; i++) {  
                 try {
                     let adquieriente = worksheet['A' + i] ?. w || '';
                     let folioControversia = worksheet['J' + i] ?. w || '';
@@ -143,16 +141,14 @@ export class ControversiasPage extends BasePage {
                         await this.page.getByText(Etapa).click();
                         await this.lbEstatus.click();
                         await this.page.getByRole('option', { name: Estatus, exact: true }).locator('div').nth(1).click();
-                        //await this.page.getByText(Estatus).first().click();
+                        
                         await this.btnConsultar.click();
                         await this.page.getByText(folioControversia).click();
                         if (await this.logoHistoria.isVisible()){
                             const screenshotPath = `screenshot_${i}.png`;
                             await this.page.screenshot({ path: screenshotPath, fullPage: true });
                         }
-                        //await this.validarConsultaControversias(); 
                     }   
-
                 } catch (error) {
                     console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
                     await this.handleError("Error en la fila  " + i + ":", error);
@@ -163,6 +159,59 @@ export class ControversiasPage extends BasePage {
             await this.handleError("Error al cargar el archivo de excell", error);
         }
     }
+
+    async consultarControversias() {
+        try {
+             const filePath = RUTAS.moduloGestionControversias;
+             const workbook = XLSX.readFile(filePath);
+             const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+             const lastRow = XLSX.utils.sheet_to_json(worksheet).length + 1;
+             this.datosPublicos = XLSX.utils.sheet_to_json(worksheet);
+             
+             for (let i = 2; i <= lastRow  ; i++) { 
+                 try {
+                     let adquieriente = worksheet['A' + i] ?. w || '';
+                     let fechaInicial = worksheet['B' + i] ?. w || '';
+                     let FechaFinal = worksheet['C' + i] ?. w || '';
+                     let numeroCuenta = worksheet['D' + i] ?. w || '';
+                     let emisor = worksheet['E' + i] ?. w || '';
+                     let afiliacion = worksheet['F' + i] ?. w || '';
+                     let referenciaIntercambio = worksheet['G' + i] ?. w || '';
+                     let importeTransaccion = worksheet['H' + i] ?. w || '';
+                     let numuatorizacion = worksheet['I' + i] ?. w || '';
+                     let folioControversia = worksheet['J' + i] ?. w || '';
+                     
+                         if (await this.btnClose.isVisible()){
+                             this.btnClose.click();
+                         }
+                         if(await this.lbAdquirienteConsulta.first().isEnabled()){
+                         await this.page.reload();
+                         await this.lbAdquirienteConsulta.click();
+                         await this.page.getByText(adquieriente).click();
+                         await this.txtFolioControversia.fill(folioControversia);
+                         await this.txtNumeroCuentaConsulta.fill(numeroCuenta);
+                         await this.lbEmisor.click();
+                         await this.page.getByText(emisor).click();
+                         await this.lbTipoFecha.click(); 
+                         await this.tipoFecha.click(); 
+                         await this.lbFechaInicial.fill(fechaInicial);
+                         await this.lbFechaFinal.fill(FechaFinal);
+                         await this.txtAfiliacionConsulta.fill(afiliacion);
+                         await this.btnConsultar.click();
+                         await this.page.getByText(folioControversia).click();
+                         await this.validarConsultaControversias(); 
+                     }   
+ 
+                 } catch (error) {
+                     console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+                     await this.handleError("Error en la fila  " + i + ":", error);
+                 }
+             }
+         } catch (error) {
+             console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+             await this.handleError("Error al cargar el archivo de excell", error);
+         }
+     }
 
     
     async validarConsultaControversias() {
@@ -175,7 +224,7 @@ export class ControversiasPage extends BasePage {
         const isFacturacionEnable = await BtnFacturacion.isEnabled();
     
 
-       if (!isControversiasEnable || !isFacturacionEnable ) { // || !isCargoEnable
+       if (!isControversiasEnable || !isFacturacionEnable ) {
          throw new Error('Uno o los 2 modulos de esta pantalla, controversias o facturacion no está disponible');
        }
         console.log('Todos los elementos web están disponibles para ser utilizados');
@@ -183,21 +232,7 @@ export class ControversiasPage extends BasePage {
         await this.page.reload();  
     }
 
-    async validarOpcionControversia(){
-       this.btnConsultar.click();
-       
-    }
-
-    async validarOpcionFacturacion(){
-        this.btnFacturacion.click(); 
-        
-
-    }
-
-    async validarOpcionCargo(){ 
-       this.btnCargo.click();
-    }
-
+    
     async validarFuncionalidadHistoria(){ 
         const BtnHistoria = this.btnHistoria.isEnabled();
         if(!BtnHistoria){
@@ -210,7 +245,6 @@ export class ControversiasPage extends BasePage {
         if (!isLogoHistoria) {
          console.log('El elemento "logoHistoria" no está disponible');
         }
-        
         console.log('El elemento "logoHistoria" se está mostrando correctamente');
         this.btnCerrarHistoria.click();
         this.btnBack.click();
@@ -219,7 +253,7 @@ export class ControversiasPage extends BasePage {
     };
    //** TERMINA CONSULTA CONTROVERSIAS    */
 
-    async  altaControversias() {
+    async  altaControversiasSimple() {
 try {
             const filePath = RUTAS.moduloGestionControversias;
             const workbook = XLSX.readFile(filePath);
@@ -227,8 +261,7 @@ try {
             const worksheet = workbook.Sheets[nameSheet];
             const lastRow = XLSX.utils.sheet_to_json(worksheet).length + 1;
            
-            
-            for (let i = 2; i <= /* lastRow */ 4 ; i++) {  //Con esto estamos solamente haciendo las primeras iteraciones
+            for (let i = 2; i <= lastRow ; i++) { 
                 try {
                     let adquieriente = worksheet['A' + i] ?. w || '';
                     let fechaInicial = worksheet['B' + i] ?. w || '';
@@ -240,7 +273,7 @@ try {
                     let tipoMoneda = worksheet['H' + i] ?. w || '';
                     let etapa = worksheet['I' + i] ?. w || '';
                   
-                        await this.btnMenuAlta.click(); //revisar si este es necesario en todas las iteraciones o cuando terminas un flujo te regresar a la alta y esto debe de ir en otra parte
+                        await this.btnMenuAlta.click(); 
                         if (await this.btnClose.isVisible()){ 
                             this.btnClose.first().click();1
                         }
@@ -254,7 +287,7 @@ try {
                         await this.txtAfiliacion.fill(afiliacion);
                         await this.txtNumeroAutorizacion.fill(numeroAutorizacion);
                         await this.btnConsultar.click();
-                        await this.gestionAltaContrversia(importeFacturacion, etapa, tipoMoneda)
+                        await this.gestionAltaControversia(importeFacturacion, etapa, tipoMoneda)
                     } else{
                         console.log ('algo fallo ')
                     }
@@ -269,9 +302,57 @@ try {
             console.error('Error al cargar el archivo de excell')
         }
     }
+    async  altaControversias() {
+        try {
+                    const filePath = RUTAS.moduloGestionControversias;
+                    const workbook = XLSX.readFile(filePath);
+                    const nameSheet = 'Alta_Controversias'
+                    const worksheet = workbook.Sheets[nameSheet];
+                    const lastRow = XLSX.utils.sheet_to_json(worksheet).length + 1;
+                   
+                    
+                    for (let i = 2; i <= lastRow ; i++) {  
+                        try {
+                            let adquieriente = worksheet['A' + i] ?. w || '';
+                            let fechaInicial = worksheet['B' + i] ?. w || '';
+                            let fechaFinal = worksheet['C' + i] ?. w || '';
+                            let numeroCuenta = worksheet['D' + i] ?. w || '';
+                            let afiliacion = worksheet['E' + i] ?. w || '';
+                            let importeFacturacion = worksheet['F' + i] ?. w || '';
+                            let numeroAutorizacion = worksheet['G' + i] ?. w || '';
+                            let tipoMoneda = worksheet['H' + i] ?. w || '';
+                            let etapa = worksheet['I' + i] ?. w || '';
+                          
+                            
+                            await this.lbAdquiriente.isEnabled()
+                            await this.page.reload();  
+                            await this.btnMenuAlta.click();
+                            if (await this.btnClose.isVisible()){ 
+                                this.btnClose.first().click();1
+                            }
+                            await this.lbAdquiriente.click();
+                            await this.page.getByText(adquieriente).click();
+                            await this.lbFechaInicial.fill(fechaInicial);
+                            await this.lbFechaFinal.fill(fechaFinal);
+                            await this.txtNumeroCuenta.fill(numeroCuenta);
+                            await this.txtAfiliacion.fill(afiliacion);
+                            await this.txtNumeroAutorizacion.fill(numeroAutorizacion);
+                            await this.btnConsultar.click();
+                            await this.gestionAltaControversia(importeFacturacion, etapa, tipoMoneda)
+                        
+        
+                    } catch (error) {
+                        console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+                        await this.handleError("Error en la fila  " + i + ":", error);
+                    }
+                }
+            } catch (error) {
+                console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+                console.error('Error al cargar el archivo de excell')
+            }
+        }
 
-
-    async gestionAltaContrversia(importeFacturacion, etapa, tipoMoneda){
+    async gestionAltaControversia(importeFacturacion, etapa, tipoMoneda){
         await this.btnPrimeraOpcion.click();
         await this.btnSiguienteHome.click();
         await this.lbEtapa.click();
@@ -280,24 +361,19 @@ try {
         await this.page.getByText(tipoMoneda).first().click();
         await this.txtImporteControversia.fill(importeFacturacion);
         await this.btnSiguienteDatosControversia.click();
-        //await this.btnPrimeraOpcion.click(); Esta opción desapareció 06/12/2023
         await this.btnSiguienteHome.click(); 
         await this.btnGuardar.click();
-
-       
         const controversia = await this.page.locator("(//div[@class='col-6 text-left text-grey-6 e-wrap-word'])[1]").innerText()
         const estatus = await this.page.locator("(//div[@class='col-6 text-left text-grey-6 e-wrap-word'])[2]").innerText()
         const motivoEstatus = await this.page.locator("(//div[@class='col-6 text-left text-grey-6 e-wrap-word'])[3]").innerText()
         const reverso = await this.page.locator("(//div[@class='col-6 text-left text-grey-6 e-wrap-word'])[4]").innerText()
-    
         console.log("Controversia: "+controversia)
         console.log("Estatus: "+estatus)
         console.log("Motivo Estatus: "+motivoEstatus)
         console.log("Reverso: "+reverso)
         console.log("---------------------------------")
-
         await this.btnAceptar.click();
-
-        }
-    
+        }        
 }
+
+

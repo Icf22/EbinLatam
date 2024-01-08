@@ -4,24 +4,22 @@ import {BasePage} from "../pages/base.page"
 
 test.use({ignoreHTTPSErrors: true});
 
-
-
-test('consultaControversias', async ({page}) => {
+test('consultaControversiasSimple', async ({page}) => {
    const controversias = new ControversiasPage(page);
    const basePage = new BasePage(page);
    await basePage.iniciarSesion('Eglobal');
    await basePage.menuGestionControversias();
-   await controversias.consultarControversias();
+   await controversias.consultarControversiasSimple();
    await basePage.cerrarSesion();
 })
 
 
-test.only('altaControversias',async ({page}) => {
+test('altaControversiasSimple',async ({page}) => {
    const controversias = new ControversiasPage(page);
    const basePage = new BasePage(page);
    await basePage.iniciarSesion('Eglobal');
    await basePage.menuGestionControversias();
-   await controversias.altaControversias();
+   await controversias.altaControversiasSimple();
 })
 
 test('consultaControversiasFullValidation', async ({page}) => {
@@ -34,7 +32,7 @@ test('consultaControversiasFullValidation', async ({page}) => {
 })
 
 
-test('altaControversiasFullValidation',async ({page}) => {
+test.only('altaControversiasFullValidation',async ({page}) => {
    const controversias = new ControversiasPage(page);
    const basePage = new BasePage(page);
    await basePage.iniciarSesion('Eglobal');

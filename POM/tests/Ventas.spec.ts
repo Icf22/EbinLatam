@@ -4,12 +4,12 @@ import {VentasPage} from "../pages/ventas.page";
 
 test.use({ignoreHTTPSErrors: true});
 
-test.only('consultaVentasAceptadasSimple', async ({page}) => {
+test('consultaVentasAceptadasSimple', async ({page}) => {
     const basePage = new BasePage(page);
     const ventasPage = new VentasPage(page);
     await basePage.iniciarSesion('Eglobal');
     await basePage.menuConsultaVentas();
-    await ventasPage.consultarVentasAceptadasEglobal();
+    await ventasPage.consultarVentasAceptadas();
     await basePage.cerrarSesion();
 })
 test('consultaVentasRechazadasSimple', async ({page}) => {
@@ -22,12 +22,12 @@ test('consultaVentasRechazadasSimple', async ({page}) => {
 })
 
 
-test('consultaVentasAceptadasFullValidation', async ({page}) => {
+test.only('consultaVentasAceptadasFullValidation', async ({page}) => {
     const basePage = new BasePage(page);
     const ventasPage = new VentasPage(page);
     await basePage.iniciarSesion('Eglobal');
     await basePage.menuConsultaVentas();
-    await ventasPage.consultarVentasAceptadasEglobal();
+    await ventasPage.consultarVentasAceptadasFullValidation();
     await ventasPage.validarFuncionalidades();
     await basePage.cerrarSesion();
 })
