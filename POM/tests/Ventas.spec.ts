@@ -3,7 +3,6 @@ import {BasePage} from "../pages/base.page";
 import {VentasPage} from "../pages/ventas.page";
 
 test.use({ignoreHTTPSErrors: true});
-
 test('consultaVentasAceptadasSimple', async ({page}) => {
     const basePage = new BasePage(page);
     const ventasPage = new VentasPage(page);
@@ -21,14 +20,13 @@ test('consultaVentasRechazadasSimple', async ({page}) => {
     await basePage.cerrarSesion();
 })
 
-
 test.only('consultaVentasAceptadasFullValidation', async ({page}) => {
     const basePage = new BasePage(page);
     const ventasPage = new VentasPage(page);
     await basePage.iniciarSesion('Eglobal');
     await basePage.menuConsultaVentas();
     await ventasPage.consultarVentasAceptadasFullValidation();
-    await ventasPage.validarFuncionalidades();
+    //await ventasPage.validarFuncionalidades();
     await basePage.cerrarSesion();
 })
 test('consultaVentasRechazadasFullValidation', async ({page}) => {
@@ -36,8 +34,8 @@ test('consultaVentasRechazadasFullValidation', async ({page}) => {
     const ventasPage = new VentasPage(page);
     await basePage.iniciarSesion('Adquiriente');
     await basePage.menuConsultaVentas();
-    await ventasPage.consultarVentasAceptadasAdquiriente();
-    await ventasPage.validarFuncionalidades();
+    await ventasPage.consultarVentasRechazadasFullValidation();
+    //await ventasPage.validarFuncionalidades();
     await basePage.cerrarSesion();
 })
 

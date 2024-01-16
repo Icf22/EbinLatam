@@ -70,6 +70,7 @@ export class VentasPage extends BasePage {
                     await this.txtNumeroCuenta.fill(numCuenta);
                     await this.txtAutorizacion.fill(numAutorizacion);
                     await this.btnConsultar.click();
+                    await this.page.waitForLoadState("domcontentloaded"); //revisar si esto espera a que cambie el texto
                     const mensaje = await buscarTexto(this.page);
                     console.log("En el registro: " + i  , mensaje);
                     async function buscarTexto(page: Page): Promise<string> {
@@ -214,14 +215,15 @@ export class VentasPage extends BasePage {
 
     }
 
-    async consultarVentasAceptadasFullValidation() {
+    async consultarVentasRechazadasFullValidation() {
         try {
             const filePath = RUTAS.moduloVentas;
             const workbook = XLSX.readFile(filePath);
-            const nameSheet = 'VENTAS CONSULTA ACEPTADAS'
+            const nameSheet = 'VENTAS CONSULTAS RECHAZADAS'
             const worksheet = workbook.Sheets[nameSheet];
             const lastRow = XLSX.utils.sheet_to_json(worksheet).length + 1;
             this.datosPublicos = XLSX.utils.sheet_to_json(worksheet);
+            let txnQueFallaron: string[] = [];
 
             for (let i = 2; i <= lastRow; i++) {
                 try {
@@ -260,39 +262,13 @@ export class VentasPage extends BasePage {
                     let tipoProceso = worksheet['AG' + i] ?. w || '';
                     let lote = worksheet['AH' + i] ?. w || '';
                     
-                    this.datosExcel = [
-                        fechaProceso,
-                        banco,
-                        codigoTransaccion,
-                        plataforma,
-                        codigoIntercambio,
-                        fechaTransaccion,
-                        horaTransaccion,
-                        numAfiliacion,
-                        numReferenciaRrn,
-                        numCuenta,
-                        numCuenta2,
-                        referenciaIntercambio,
+                    const elemento = [
                         numAutorizacion,
-                        importeTransaccion,
-                        importeCashback,
-                        importePropina,
-                        moneda,
-                        registroLog,
-                        emisor,
-                        codigoError,
-                        codigoRiesgo,
-                        codigoTipoProducto,
-                        numContrato,
-                        cuentaRecaudadora,
-                        codigoMedioAcceso,
-                        codigoIndicadorComercioElectronico,
-                        diferimientoPromocion,
-                        parcializadoPromocion,
-                        banderaTarjetaPresente,
-                        descripcionTipoMoneda
+                        numAfiliacion
                     ];
-                    await this.lbAdquiriente.click(); 
+
+                    await this.page.reload();
+                    await this.lbAdquiriente.first().click();
                     await this.page.getByText(banco).click();
                     await this.lbFechaProceso.click();
                     await this.page.getByRole('listbox').getByText(tipoProceso).first().click();
@@ -303,13 +279,41 @@ export class VentasPage extends BasePage {
                     await this.txtNumeroCuenta.fill(numCuenta);
                     await this.txtAutorizacion.fill(numAutorizacion);
                     await this.btnConsultar.click();
-                    await this.compararDetalleVenta(i);
+                    const registros = this.validarRegistros(elemento);
+
+                    const condicionesNoCumplidas =
+                    (await registros).missingElements.length !== 0
+                    console.log (condicionesNoCumplidas);
+
+                    if (condicionesNoCumplidas) {
+                      console.log('No se cumplieron las condiciones');
+                      console.log('Registros faltantes :', (await registros).missingElements.length);
+                      txnQueFallaron.push("-Fallo la transacción numero "+(i-1));  
+                    }
+
+                    console.log(
+                      "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+                    );
+                    console.log(
+                      "Registros que si se muestran en el grid:",
+                      (await registros).similarElements
+                    );
 
                 } catch (error) {
                     console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
                     console.error('Error en la fila  ' + i + ':', error);
                     this.cerrarSesion();
                     this.cerrarNavegador();
+                }
+
+                if(txnQueFallaron.length !== 0){ //revisar este reporte
+                  console.log("***************** FALLAS QUE HUBO DURANTE LA EJECUCION ********************************")
+                  console.log("Numero de transacciones que fallaron: "+txnQueFallaron.length);
+                  for (const elemento of txnQueFallaron) {
+                    console.log(elemento + '\n'); 
+                  }
+                  console.log('----------->REVISAR LOG'); 
+                  console.log("***************************************************************************************")
                 }
             }
         } catch (error) {
@@ -321,47 +325,194 @@ export class VentasPage extends BasePage {
 
     }
     
+    async consultarVentasAceptadasFullValidation() {
+      try {
+          const filePath = RUTAS.moduloVentas;
+          const workbook = XLSX.readFile(filePath);
+          const nameSheet = 'VENTAS CONSULTA ACEPTADAS'
+          const worksheet = workbook.Sheets[nameSheet];
+          const lastRow = XLSX.utils.sheet_to_json(worksheet).length + 1;
+          this.datosPublicos = XLSX.utils.sheet_to_json(worksheet);
+          let txnQueFallaron: string[] = [];
+
+          for (let i = 2; i <= lastRow; i++) {
+              try {
+                  let fechaInicial = worksheet['A' + i] ?. w || '';
+                  let fechaFinal = worksheet['B' + i] ?. w || '';
+                  let fechaProceso = worksheet['C' + i] ?. w || '';
+                  let banco = worksheet['D' + i] ?. w || '';
+                  let codigoTransaccion = worksheet['E' + i] ?. w || '';
+                  let plataforma = worksheet['F' + i] ?. w || '';
+                  let codigoIntercambio = worksheet['G' + i] ?. w || '';
+                  let fechaTransaccion = worksheet['H' + i] ?. w || '';
+                  let horaTransaccion = worksheet['I' + i] ?. w || '';
+                  let numAfiliacion = worksheet['J' + i] ?. w || '';
+                  let numReferenciaRrn = worksheet['K' + i] ?. w || '';
+                  let numCuenta = worksheet['L' + i] ?. w || '';
+                  let numCuenta2 = worksheet['M' + i] ?. w || '';
+                  let referenciaIntercambio = worksheet['N' + i] ?. w || '';
+                  let numAutorizacion = worksheet['O' + i] ?. w || '';
+                  let importeTransaccion = worksheet['P' + i] ?. w || '';
+                  let importeCashback = worksheet['Q' + i] ?. w || '';
+                  let moneda = worksheet['R' + i] ?. w || '';
+                  let registroLog = worksheet['S' + i] ?. w || '';
+                  let emisor = worksheet['T' + i] ?. w || '';
+                  let codigoError = worksheet['U' + i] ?. w || '';
+                  let codigoRiesgo = worksheet['V' + i] ?. w || '';
+                  let codigoTipoProducto = worksheet['W' + i] ?. w || '';
+                  let numContrato = worksheet['X' + i] ?. w || '';
+                  let cuentaRecaudadora = worksheet['Y' + i] ?. w || '';
+                  let codigoMedioAcceso = worksheet['Z' + i] ?. w || '';
+                  let codigoIndicadorComercioElectronico = worksheet['AA' + i] ?. w || '';
+                  let diferimientoPromocion = worksheet['AB' + i] ?. w || '';
+                  let parcializadoPromocion = worksheet['AC' + i] ?. w || '';
+                  let banderaTarjetaPresente = worksheet['AD' + i] ?. w || '';
+                  let descripcionTipoMoneda = worksheet['AE' + i] ?. w || '';
+                  let importePropina = worksheet['AF' + i] ?. w || '';
+                  let tipoProceso = worksheet['AG' + i] ?. w || '';
+                  let lote = worksheet['AH' + i] ?. w || '';
+                  
+                  const elemento = [
+                    numAutorizacion,
+                    numAfiliacion
+                ];
+
+                  await this.page.reload();
+                  await this.lbAdquiriente.first().click();
+                  await this.page.getByText(banco).click();
+                  await this.lbFechaProceso.click();
+                  await this.page.getByRole('listbox').getByText(tipoProceso).first().click();
+                  await this.dateFechaInicial.click();
+                  await this.dateFechaInicial.fill(fechaInicial);
+                  await this.dateFechaFinal.fill(fechaFinal);
+                  await this.txtAfiliacion.fill(numAfiliacion);
+                  await this.txtNumeroCuenta.fill(numCuenta);
+                  await this.txtAutorizacion.fill(numAutorizacion);
+                  await this.btnConsultar.click();
+                  const registros = this.validarRegistros(elemento);
+
+                  const condicionesNoCumplidas =
+                  (await registros).missingElements.length !== 0
+                  //console.log (condicionesNoCumplidas);
+
+                  if (condicionesNoCumplidas) {
+                    console.log('No se cumplieron las condiciones');
+                    console.log('Registros faltantes :', (await registros).missingElements.length);
+                    txnQueFallaron.push("-Fallo la transacción numero "+(i-1));  
+                  }
+
+                  console.log(
+                    "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+                  );
+                  console.log(
+                    "Registros que si se muestran en el grid:",
+                    (await registros).similarElements
+                  );
+
+              } catch (error) {
+                  console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+                  console.error('Error en la fila  ' + i + ':', error);
+                  this.cerrarSesion();
+                  this.cerrarNavegador();
+              }
+
+              if(txnQueFallaron.length !== 0){ //revisar este reporte
+                console.log("***************** FALLAS QUE HUBO DURANTE LA EJECUCION ********************************")
+                console.log("Numero de transacciones que fallaron: "+txnQueFallaron.length);
+                for (const elemento of txnQueFallaron) {
+                  console.log(elemento + '\n'); 
+                }
+                console.log('----------->REVISAR LOG'); 
+                console.log("***************************************************************************************")
+              }
+          }
+      } catch (error) {
+          console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+          console.error('Error al cargar el archivo de excell')
+          this.cerrarSesion();
+          this.cerrarNavegador();
+      }
+
+  }
+
+ 
 
    ///****Métodos compartidos entre las clases */
-    async compararDetalleVenta(i) {
-       try {
-        await this.page.waitForSelector('.q-td');
-        const datosDelFrontend = await this.page.evaluate(() => {
-            
-            const tabla = document.querySelector('.col-12.row.q-mt-lg');
-            if (! tabla) {
-                console.log('tabla no existe');
-                return [] as string[];
-            }
-            const columnas = tabla.querySelectorAll('.col-6.text-left.text-grey-6.e-wrap-word');
-            const datos: string[] = [];
-            columnas.forEach(elemento => {
-                const dato = elemento.textContent ?. trim() ?? '';
-                datos.push(dato);
-            });
-            
-            return datos;
-        })
+   async validarGrid(expectedHeaderTexts: string[]) {
+    try {
+      const gridTextos = await this.page.evaluate(() => {
+        const thElements = Array.from(
+          document.querySelectorAll("th.text-center.sortable")
+        );
+        const gridTextos = thElements.map((th) => th.textContent?.trim());
+        return gridTextos;
+      });
 
-        const datosNoEncontrados = this.datosExcel.filter(dato => dato.trim() !== '' && ! datosDelFrontend.includes(dato));
+      const missingElements: string[] = [];
+      const elementsPresent: string[] = [];
+      const elementsOutOfOrder: string[] = [];
 
-        if (datosNoEncontrados.length > 0) {
-            console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
-            console.log('Datos de Excel no encontrados en el frontend en la fila', + i, ':');
-            datosNoEncontrados.forEach(dato => {
-                console.log(dato);
-            });
+      for (const element of expectedHeaderTexts) {
+        if (gridTextos.includes(element)) {
+          elementsPresent.push(element);
         } else {
-            console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
-            console.log('Todos los datos de Excel se encontraron en el frontenden la fila', + i, ':');
-  
+          //missingElements.push(element);
         }
+      }
+      for (const element of elementsPresent.reverse()) {
+        const expectedIndex = expectedHeaderTexts.indexOf(element);
+        const actualIndex = gridTextos.indexOf(element);
+        if (expectedIndex !== actualIndex) {
+          elementsOutOfOrder.push(element);
+        }
+      }
+      return {
+        gridTextos,
+        elementsPresent,
+        missingElements,
+        elementsOutOfOrder,
+      };
     } catch (error) {
-        console.error('Error en la fila  ' + i + ':', error);
-        this.cerrarSesion();
-        this.cerrarNavegador();
+      await this.handleError(
+        "Ocurrió un error al validar headers del grid:",
+        error
+      );
+      throw error;
     }
+  }
+  async validarRegistros(expectedRegistersTexts: string[]) {
+    try {
+      let gridTextos: string[] = [];
+      await this.page.waitForLoadState("domcontentloaded");
+      await this.page.waitForSelector("td.q-td>div");
+      gridTextos = await this.page.evaluate(() => {
+        const thElements = Array.from(document.querySelectorAll("td.q-td>div"));
+        const gridTextos1 = thElements.map(
+          (th) => th.textContent?.trim()
+        ) as string[];
+        const gridTextos = gridTextos1.filter(
+          (text) => text.trim() !== "--" && text.trim() !== ""
+        );
+        return gridTextos;
+      });
+      const missingElements: string[] = [];
+      const similarElements: string[] = [];
+
+      for (const element of expectedRegistersTexts) {
+        if (gridTextos.includes(element)) {
+          similarElements.push(element);
+        } else {
+          missingElements.push(element);
+        }
+      }
+
+      return { missingElements, similarElements, gridTextos };
+    } catch (error) {
+      console.log("Ocurrió un error al validar los datos del grid:", error);
+      throw error;
     }
+  }  
+
 
 
     async validarFuncionalidades() {

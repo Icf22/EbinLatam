@@ -14,7 +14,7 @@ test('consultaControversiasSimple', async ({page}) => {
 })
 
 
-test('altaControversiasSimple',async ({page}) => {
+test.only('altaControversiasSimple',async ({page}) => {
    const controversias = new ControversiasPage(page);
    const basePage = new BasePage(page);
    await basePage.iniciarSesion('Eglobal');
