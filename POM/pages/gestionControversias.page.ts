@@ -141,7 +141,6 @@ export class ControversiasPage extends BasePage {
                         await this.page.getByText(Etapa).click();
                         await this.lbEstatus.click();
                         await this.page.getByRole('option', { name: Estatus, exact: true }).locator('div').nth(1).click();
-                        
                         await this.btnConsultar.click();
                         await this.page.getByText(folioControversia).click();
                         if (await this.logoHistoria.isVisible()){
@@ -201,7 +200,6 @@ export class ControversiasPage extends BasePage {
                          await this.page.getByText(folioControversia).click();
                          await this.validarConsultaControversias(); 
                      }   
- 
                  } catch (error) {
                      console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
                      await this.handleError("Error en la fila  " + i + ":", error);
@@ -223,7 +221,6 @@ export class ControversiasPage extends BasePage {
         const isControversiasEnable = await BtnControverias.isEnabled();
         const isFacturacionEnable = await BtnFacturacion.isEnabled();
     
-
        if (!isControversiasEnable || !isFacturacionEnable ) {
          throw new Error('Uno o los 2 modulos de esta pantalla, controversias o facturacion no está disponible');
        }
@@ -232,7 +229,6 @@ export class ControversiasPage extends BasePage {
         await this.page.reload();  
     }
 
-    
     async validarFuncionalidadHistoria(){ 
         const BtnHistoria = this.btnHistoria.isEnabled();
         if(!BtnHistoria){
@@ -252,7 +248,6 @@ export class ControversiasPage extends BasePage {
 
     };
    //** TERMINA CONSULTA CONTROVERSIAS    */
-
     async  altaControversiasSimple() {
 try {
             const filePath = RUTAS.moduloGestionControversias;
