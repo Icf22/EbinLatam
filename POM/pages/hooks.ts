@@ -11,8 +11,8 @@ import { BasePage } from '../pages/base.page';
     await consultaLog.menuConsultaLogPos();
 });*/
 
-test.afterEach(async ({ page }) => {
-    const basePage = new BasePage(page);
-    await basePage.cerrarSesion();
-    await basePage.cerrarNavegador();
-});
+// test.afterEach(async ({ page }) => {
+//     const basePage = new BasePage(page);
+//     await basePage.cerrarSesion();
+//     await basePage.cerrarNavegador();
+// });

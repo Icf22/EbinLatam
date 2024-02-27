@@ -14,7 +14,7 @@ export class ControversiasPage extends BasePage {
     private datosExcel : any[] = [];
     public datosPublicos;
     //ALTA
-    readonly lbAdquiriente : Locator;
+    lbAdquiriente : Locator;
     lbFechaProceso: Locator;
     lbFechaInicial: Locator;
     lbFechaFinal: Locator;
@@ -36,6 +36,7 @@ export class ControversiasPage extends BasePage {
     btnGuardar: Locator;
     btnClose: Locator;
     iconDone: Locator;
+    textModuloAltaControversia: Locator;
     
     //CONSULTA
     lbTipoFecha: Locator;
@@ -67,7 +68,8 @@ export class ControversiasPage extends BasePage {
         this.btnMenuReportes = page.getByRole('button', { name: 'Reportes' });
         this.btnMenuConsulta = page.getByRole('button', { name: 'Consulta' });
         //ALTA 
-        this.lbAdquiriente = page.locator('div').filter({ hasText: /^Adquirente\*$/ }).first(); 
+        this.textModuloAltaControversia = page.getByText('Alta de controversia');
+        this.lbAdquiriente = page.locator('div').filter({ hasText: /^arrow_drop_down$/ }).nth(1); //page.getByText('arrow_drop_down').nth(1);
         this.lbFechaInicial = page.getByLabel('Fecha inicial');
         this.lbFechaFinal = page.getByLabel('Fecha final');
         this.txtNumeroCuenta = page.getByLabel('Número de cuenta'); 

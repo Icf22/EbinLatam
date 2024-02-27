@@ -83,4 +83,7 @@ export class BasePage {
     async cerrarNavegador(){
          await this.page.close();
       }
+    
+
+      
 }
